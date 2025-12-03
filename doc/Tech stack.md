@@ -1,0 +1,2 @@
+- Python 3
+- PyGame (as game making library)
