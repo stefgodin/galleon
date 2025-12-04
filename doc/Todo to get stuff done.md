@@ -1,8 +1,9 @@
 - [ ] Hexagonal grid ~ Mex
 	- [ ] Add non-path tiles (island, cities, cove, forest, etc) + draw them on screen
 	- [ ] Map generation function thingymagig (mirror map?)
-- [ ] Draw boats on screen ~ Steg
-	- [ ] Draw boats on grid and move it (path finding)
+- [x] Draw boats on screen ~ Steg ✅ 2025-12-03
+	- [x] Draw boats on grid and move it ✅ 2025-12-03
+	- [ ] Path finding on hex grid
 - [ ] Make a combat system (enemy + canons + hp)
 	- [ ] Capture system (fighting and capturing cities)
 	- [ ] Respawn mechanic
