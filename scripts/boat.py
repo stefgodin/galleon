@@ -1,20 +1,16 @@
 import os
 import pygame
-from pathlib import Path
+from .game_state import GameState,ROOT_DIR
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
-IMG_BOAT = "boat"
+def load_boat_assets(game: GameState):
+    game.boat_base_img = pygame.image.load(os.path.join(ROOT_DIR,"assets","boat.png")).convert_alpha()
 
-class Boats:
-    screen_pos: list[pygame.Vector2] = []
-    active: list[bool] = [] 
-
-    def add_boat(self) -> int:
-        self.screen_pos.append(pygame.Vector2(x=0,y=0))
-        self.active.append(True)
-        return self.active.__len__() - 1 
-
-def load_boat_assets() -> dict[str, pygame.Surface]:
-    return {
-        IMG_BOAT:  pygame.image.load(os.path.join(ROOT_DIR,"assets","boat.png")).convert_alpha()
-    }
+def add_boat(game: GameState) -> int:
+    idx = game.boat_rect.__len__()
+    boat_rect = pygame.Rect(0,0,256,256)
+    game.boat_rect.append(boat_rect)
+    game.boat_img.append(pygame.transform.scale(game.boat_base_img, (boat_rect.w, boat_rect.h)))
+    game.boat_going_to.append(None)
+    game.boat_direction.append(pygame.Vector2(0, 0))
+    game.boat_speed.append(1)
+    return idx
