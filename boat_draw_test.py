@@ -1,5 +1,6 @@
 import pygame
-from scripts.boat import add_boat,load_boat_assets
+from scripts.boat import add_boat,load_boat_assets,move_boats_to_destinations,draw_boats
+from scripts.fake_grid import setup_grid,coord_to_index,draw_grid
 from scripts.game_state import GameState
 
 def run():
@@ -9,7 +10,9 @@ def run():
     running = True
 
     game = GameState()
+    
     load_boat_assets(game)
+    setup_grid(game)
     boat_1 = add_boat(game)
 
     while running:
@@ -32,56 +35,15 @@ def run():
         game.show_boxes = game.key_1
 
         if game.mouse_left:
-            game.boat_going_to[boat_1] = game.mouse_pos.copy()
+            game.boats_destination[boat_1] = game.mouse_pos.copy()
 
-        for i, boat_going_to in enumerate(game.boat_going_to):
-            if boat_going_to == None:
-                continue
-
-            movement = game.boat_speed_const * game.boat_speed[i] * game.dt
-
-            x_done = False
-            left_x = boat_going_to.x - game.boat_rect[i].x - (game.boat_rect[i].w/2)
-            game.boat_direction[i].x = 1 if left_x >= 0 else -1
-            mov_x = movement * game.boat_direction[i].x
-            if abs(left_x) <= abs(mov_x):
-                game.boat_rect[i].x = boat_going_to.x - (game.boat_rect[i].w / 2)
-                x_done = True
-            else:
-                game.boat_rect[i].x += mov_x
-                
-            y_done = False
-            left_y = boat_going_to.y - game.boat_rect[i].y - (game.boat_rect[i].h/2)
-            game.boat_direction[i].y = 1 if left_y >= 0 else -1
-            mov_y = movement * game.boat_direction[i].y
-            if abs(left_y) <= abs(mov_y):
-                game.boat_rect[i].y = boat_going_to.y - (game.boat_rect[i].h / 2)
-                y_done = True
-            else:
-                game.boat_rect[i].y += mov_y
-            
-            if x_done and y_done:
-                game.boat_going_to[i] = None
-                
+        move_boats_to_destinations(game)
 
         # Render
         screen.fill("white")
 
-        for i, boat_rect in enumerate(game.boat_rect):
-            boat_img = game.boat_img[i]
-            if game.boat_direction[i].x == 1:
-                boat_img = pygame.transform.flip(boat_img, True, False)
-
-            screen.blit(boat_img, boat_rect)
-
-        if game.show_boxes:
-            for boat_rect in game.boat_rect:
-                pygame.draw.lines(screen, pygame.Color(255, 0, 0), True, [
-                    (boat_rect.x, boat_rect.y),
-                    (boat_rect.x + boat_rect.w, boat_rect.y),
-                    (boat_rect.x + boat_rect.w, boat_rect.y + boat_rect.h),
-                    (boat_rect.x, boat_rect.y + boat_rect.h),
-                ])
+        draw_grid(game, screen)
+        draw_boats(game, screen)
 
         pygame.display.flip()
 
