@@ -17,33 +17,35 @@ def add_boat(game: GameState) -> int:
     game.boats_rect.append(boat_rect)
     game.boats_img_idx.append(BoatImg.BASE)
     game.boats_destination.append(None)
+    game.boats_path.append(None)
+    game.boats_final_tile.append(-1)
     game.boats_direction.append(pygame.Vector2(0, 0))
     game.boats_speed.append(1)
     return idx
 
 def move_boats_to_destinations(game: GameState) -> int:
-    for i, boat_going_to in enumerate(game.boats_destination):
-        if boat_going_to == None:
+    for i, boat_dest in enumerate(game.boats_destination):
+        if boat_dest == None:
             continue
 
         movement = game.boat_speed_const * game.boats_speed[i] * game.dt
 
         x_done = False
-        left_x = boat_going_to.x - game.boats_rect[i].x - (game.boats_rect[i].w/2)
+        left_x = boat_dest[0] - game.boats_rect[i].x - (game.boats_rect[i].w/2)
         game.boats_direction[i].x = 1 if left_x >= 0 else -1
         mov_x = movement * game.boats_direction[i].x
         if abs(left_x) <= abs(mov_x):
-            game.boats_rect[i].x = boat_going_to.x - (game.boats_rect[i].w / 2)
+            game.boats_rect[i].x = boat_dest[0] - (game.boats_rect[i].w / 2)
             x_done = True
         else:
             game.boats_rect[i].x += mov_x
 
         y_done = False
-        left_y = boat_going_to.y - game.boats_rect[i].y - (game.boats_rect[i].h/2)
+        left_y = boat_dest[1] - game.boats_rect[i].y - (game.boats_rect[i].h/2)
         game.boats_direction[i].y = 1 if left_y >= 0 else -1
         mov_y = movement * game.boats_direction[i].y
         if abs(left_y) <= abs(mov_y):
-            game.boats_rect[i].y = boat_going_to.y - (game.boats_rect[i].h / 2)
+            game.boats_rect[i].y = boat_dest[1] - (game.boats_rect[i].h / 2)
             y_done = True
         else:
             game.boats_rect[i].y += mov_y
