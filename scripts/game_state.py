@@ -26,9 +26,10 @@ class GameState:
     boat_speed_const: int = 0.3
     boat_base_size: int = 48
     boats_rect: list[pygame.Rect] = []
+    boats_current_tile: list[int] = []
     boats_img_idx: list[pygame.Surface] = []
-    boats_destination: list[tuple[int, int]|None] = []
-    boats_path: list[list[int]|None] = []
+    boats_destination_tile: list[int] = []
+    boats_path: list[list[int]] = []
     boats_final_tile: list[int] = []
     boats_direction: list[pygame.Vector2] = []
     boats_speed: list[int] = []
