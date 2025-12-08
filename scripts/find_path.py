@@ -1,7 +1,7 @@
 import scripts.game_state as gs
 import scripts.fake_grid as grid
 
-def find_closest_path_tiles(game: gs.GameState, tile: int) -> list[int]:
+def find_closest_path_tiles(game: gs.GameState, tile: int, not_moveable_tiles: list[int] = []) -> list[int]:
     if tile == -1:
         return []
     
@@ -19,7 +19,7 @@ def find_closest_path_tiles(game: gs.GameState, tile: int) -> list[int]:
                 continue
 
             checked.append(tile)
-            if grid.is_path_tile(game, tile):
+            if grid.is_path_tile(game, tile) and tile not in not_moveable_tiles:
                 tiles.append(tile)
             else:
                 next_check_batch += grid.neighbor_tiles(game, tile, False)
@@ -30,11 +30,11 @@ def find_closest_path_tiles(game: gs.GameState, tile: int) -> list[int]:
 
 
 # A*
-def find_path(game: gs.GameState, from_tile: int, to_tile: int) -> list[int]:
+def find_path(game: gs.GameState, from_tile: int, to_tile: int, ignore_tiles: list[int] = []) -> list[int]:
     if from_tile == -1:
         return []
     
-    potential_to_tiles = find_closest_path_tiles(game, to_tile)
+    potential_to_tiles = find_closest_path_tiles(game, to_tile, ignore_tiles)
     if not potential_to_tiles.__len__():
         return []
     else:
@@ -63,6 +63,9 @@ def find_path(game: gs.GameState, from_tile: int, to_tile: int) -> list[int]:
             break # Done
 
         for neighbor in grid.neighbor_tiles(game, current, True):
+            if neighbor in ignore_tiles:
+                continue
+
             neighbor_g_score = g_scores[current] + grid.calc_dist(game, current, neighbor)
             if neighbor in g_scores and neighbor_g_score >= g_scores[neighbor]:
                 continue
@@ -80,11 +83,11 @@ def find_path(game: gs.GameState, from_tile: int, to_tile: int) -> list[int]:
     if to_tile not in came_from:
         return []
     
-    path = [to_tile]
+    path = []
     current = to_tile
     while current != from_tile:
+        path.append(current) # will not append the last tile, by design (it's the start)
         current = came_from[current]
-        path.append(current)
 
     path.reverse()
     return path

@@ -2,6 +2,7 @@ import os
 import pygame
 import scripts.game_state as gs
 import scripts.fake_grid as grid
+import scripts.find_path as pf
 
 class BoatImg:
     BASE = 0
@@ -20,7 +21,6 @@ def add_boat(game: gs.GameState) -> int:
     game.boats_img_idx.append(BoatImg.BASE)
     game.boats_destination_tile.append(-1)
     game.boats_path.append([])
-    game.boats_final_tile.append(-1)
     game.boats_direction.append(pygame.Vector2(0, 0))
     game.boats_speed.append(1)
     return idx
@@ -31,7 +31,13 @@ def move_along_path(game: gs.GameState):
 def move_to_dest(game: gs.GameState):
     for i, boat_dest_tile in enumerate(game.boats_destination_tile):
         if boat_dest_tile == -1 and game.boats_path[i].__len__():
+            if game.boats_path[i][0] in game.boats_current_tile:
+                # TODO: also check for surrounding occupied boat tiles, not just the one we're trying to access
+                game.boats_path[i] = pf.find_path(game, game.boats_current_tile[i], game.boats_path[i][-1], [game.boats_path[i][0]]) 
+                continue
+
             game.boats_destination_tile[i] = game.boats_path[i].pop(0)
+            game.boats_current_tile[i] = game.boats_destination_tile[i]
 
         boat_dest = grid.index_to_global_coord(game, boat_dest_tile) 
         if boat_dest == None:
@@ -60,7 +66,6 @@ def move_to_dest(game: gs.GameState):
             game.boats_rect[i].y += mov_y
 
         if x_done and y_done:
-            game.boats_current_tile[i] = game.boats_destination_tile[i]
             game.boats_destination_tile[i] = -1
 
 def draw_boats(game: gs.GameState, screen: pygame.Surface):

@@ -1,4 +1,5 @@
 import pygame
+import random
 import scripts.boat as boat
 import scripts.fake_grid as grid
 import scripts.game_state as gs
@@ -7,6 +8,7 @@ import scripts.find_path as pf
 def run():
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
+    pygame.display.set_caption("Galleon")
     clock = pygame.time.Clock()
     running = True
 
@@ -14,9 +16,10 @@ def run():
     
     boat.setup_boats(game)
     grid.setup_grid(game)
-    boat_1 = boat.add_boat(game)
-    game.boats_current_tile[boat_1] = 0
-    game.boats_rect[boat_1].center = grid.index_to_global_coord(game, game.boats_current_tile[boat_1])
+    for _ in range(0, 10):
+        id = boat.add_boat(game)
+        game.boats_current_tile[id] = random.randint(0, game.fake_grid_tiles.__len__() - 1)
+        game.boats_rect[id].center = grid.index_to_global_coord(game, game.boats_current_tile[id])
 
     while running:
         # Input
@@ -35,10 +38,19 @@ def run():
         # Update
         game.show_boxes = game.key_1
 
+        for i, path in enumerate(game.boats_path):
+            if path.__len__():
+               continue 
+            
+            tile = random.randint(0, game.fake_grid_tiles.__len__() - 1)
+            game.boats_path[i] = pf.find_path(game, game.boats_current_tile[i], tile)
+
+
         if game.mouse_pos is not None:
             if game.mouse_left:
                 final_tile = grid.global_coord_to_index(game, game.mouse_pos[0], game.mouse_pos[1])
-                game.boats_path[boat_1] = pf.find_path(game, game.boats_current_tile[boat_1], final_tile)
+                for i, current_tile in enumerate(game.boats_current_tile): 
+                    game.boats_path[i] = pf.find_path(game, current_tile, final_tile)
 
             grid_coord = grid.global_to_grid_coord(game, game.mouse_pos[0], game.mouse_pos[1])
             if grid_coord is not None:
@@ -56,7 +68,8 @@ def run():
 
         pygame.display.flip()
 
-        game.dt = clock.tick(60)
+        game.dt = clock.tick(120)
+        pygame.display.set_caption("Galleon (" + str(clock.get_fps()) + " fps)")
 
     pygame.quit()
 

@@ -30,6 +30,5 @@ class GameState:
     boats_img_idx: list[pygame.Surface] = []
     boats_destination_tile: list[int] = []
     boats_path: list[list[int]] = []
-    boats_final_tile: list[int] = []
     boats_direction: list[pygame.Vector2] = []
     boats_speed: list[int] = []
