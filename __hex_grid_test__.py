@@ -44,10 +44,6 @@ screen = pygame.display.set_mode((game_window_width, game_window_height))
 
 map_colums = screen.get_width() / SIZE
 map_rows = screen.get_height() / (math.sqrt(3) * SIZE /2)
-print(screen.get_width())
-print(map_colums)
-print(screen.get_height())
-print(map_rows)
 
 clock = pygame.time.Clock()
 running = True
