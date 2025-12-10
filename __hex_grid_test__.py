@@ -1,24 +1,10 @@
 import pygame
 import math
+import scripts.tile as hex_tile
 
 
 pygame.init()
-SIZE = 200
-
-class Tile:
-    # doubled-height hexagon pattern
-    size = 20
-    tile_horizontal_spacing = 3/2 * SIZE
-    tile_vertical_spacing = math.sqrt(3) * SIZE
-
-    def __init__(self, coordinates):
-        self.corners = []
-        self.coordinates = coordinates
-        self.display_coordinates = pygame.Vector2(coordinates.x * self.tile_horizontal_spacing, coordinates.y * self.tile_vertical_spacing / 2)
-    
-    def add_corner(self, corner):
-        self.corners.append(corner)
-    
+SIZE = 20
 
 def flat_hex_corner( center, size, i):
     angle_deg = 60 * i
@@ -55,7 +41,7 @@ for c in range(int(map_colums+1)):
         if (c + r) % 2 == 0:
             tile_coordinates = pygame.Vector2()
             tile_coordinates.xy = c, r
-            tile = Tile(tile_coordinates)
+            tile = hex_tile.Tile(tile_coordinates)
             for corner_number in range(6):
                 corner = flat_hex_corner(tile.display_coordinates, SIZE, corner_number)
                 tile.add_corner(corner)
