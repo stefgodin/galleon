@@ -5,6 +5,9 @@
 	- [x] Draw boats on grid and move it ✅ 2025-12-03
 	- [x] Path finding on a grid ✅ 2025-12-07
 	- [ ] Concurrent path finding of many boats (reserving tiles)
+		- [ ] Check to implement D* algorithm
+			- http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf
+			- https://www.youtube.com/watch?v=q77-uxsDZow
 	- [ ] Path find on hex grid
 - [ ] Make a combat system (enemy + canons + hp)
 	- [ ] Capture system (fighting and capturing cities)
