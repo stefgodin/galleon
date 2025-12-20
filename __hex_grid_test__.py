@@ -1,6 +1,6 @@
 import pygame
 import math
-import scripts.tile as hex_tile
+import scripts.hex_grid as grid
 
 
 pygame.init()
@@ -11,13 +11,14 @@ screen = pygame.display.set_mode((game_window_width, game_window_height))
 
 clock = pygame.time.Clock()
 running = True
-
+grid.generate_grid(screen)
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
+    grid.draw_grid(screen)
     
     pygame.display.flip()
 
