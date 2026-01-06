@@ -19,6 +19,7 @@ while running:
             running = False
 
     grid.draw_grid(screen)
+    grid.highlight_current_tile(screen)
     
     pygame.display.flip()
 

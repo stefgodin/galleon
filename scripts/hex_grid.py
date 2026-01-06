@@ -5,18 +5,20 @@ from enum import Enum
 
 SIZE = 20
 line_color = pygame.Color(0,0,0)
+highlight_line_color = pygame.Color(240,240,240)
 grid = []
 tile_horizontal_spacing = 3/2 * SIZE
 tile_vertical_spacing = math.sqrt(3) * SIZE
-colors = [(0, 0, 0), (0, 255, 255), (243, 206, 57), (131, 131, 131), (76, 0, 153), (0, 152, 0)]
+colors = [(0, 0, 0), (0, 255, 255), (243, 206, 57), (131, 131, 131), (76, 0, 153), (0, 152, 0), (150, 152, 150)]
 
 class Tile(Enum):
-    VOID = 0,
-    SEA = 1,
-    ISLAND = 2,
+    VOID = 0
+    SEA = 1
+    ISLAND = 2
     CITY = 3
     COVE = 4
     LAND = 5
+    CHOSEN = 6
 
 def flat_hex_corner(center, i):
     angle_deg = 60 * i
@@ -33,7 +35,7 @@ def hex_corners(tile_center_coords):
 
     return corners
 
-def draw_tile(screen, tile_coords):
+def draw_tile(screen, tile_coords, boundary_color):
     tile_corners = hex_corners(tile_coords)
 
     pygame.draw.polygon(screen, colors[int(tile_coords.z)],tile_corners)
@@ -43,7 +45,7 @@ def draw_tile(screen, tile_coords):
         else:
             next_corner_index = 0
             
-        pygame.draw.line(screen, line_color, tile_corners[i], tile_corners[next_corner_index], 3)
+        pygame.draw.line(screen, boundary_color, tile_corners[i], tile_corners[next_corner_index], 3)
 
 def position_to_coords(grid_postion: pygame.Vector3):
     return pygame.Vector3(grid_postion.x * tile_horizontal_spacing, grid_postion.y * tile_vertical_spacing / 2, grid_postion.z)
@@ -51,7 +53,15 @@ def position_to_coords(grid_postion: pygame.Vector3):
 def draw_grid(screen):
     for tile in grid:
         tile_coords = position_to_coords(tile)
-        draw_tile(screen, tile_coords)
+        draw_tile(screen, tile_coords, line_color)
+
+def highlight_current_tile(screen):
+    mouse_pos = pygame.mouse.get_pos()
+    x = round(mouse_pos[0] / tile_horizontal_spacing)
+    y = round(2 * mouse_pos[1] / tile_vertical_spacing)
+    z = 6
+    hex_coords = position_to_coords(pygame.Vector3(x,y,z))
+    draw_tile(screen, hex_coords, highlight_line_color)
 
 def generate_grid(screen):
     map_colums = screen.get_width() / SIZE
