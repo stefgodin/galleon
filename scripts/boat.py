@@ -14,73 +14,74 @@ def setup_boats(game: gs.GameState):
 
 
 def add_boat(game: gs.GameState) -> int:
-    idx = game.boats_rect.__len__()
+    idx = game.boats.__len__()
     boat_rect = pygame.Rect(0, 0, game.boat_base_size, game.boat_base_size)
-    game.boats_rect.append(boat_rect)
-    game.boats_current_tile.append(None)
-    game.boats_img_idx.append(BoatImg.BASE)
-    game.boats_destination_tile.append(-1)
-    game.boats_path.append([])
-    game.boats_direction.append(pygame.Vector2(0, 0))
-    game.boats_speed.append(1)
+    boat = gs.Boat()
+    boat.rect = boat_rect
+    boat.current_tile = None
+    boat.img_idx = BoatImg.BASE
+    boat.destination_tile = -1
+    boat.path = []
+    boat.direction = pygame.Vector2(0, 0)
+    boat.speed = 1
+    game.boats.append(boat)
     return idx
 
 def move_along_path(game: gs.GameState):
     move_to_dest(game)
 
 def move_to_dest(game: gs.GameState):
-    for i, boat_dest_tile in enumerate(game.boats_destination_tile):
-        if boat_dest_tile == -1 and game.boats_path[i].__len__():
-            if game.boats_path[i][0] in game.boats_current_tile:
+    for boat in game.boats:
+        if boat.destination_tile == -1 and boat.path.__len__():
+            if next((other_boat for other_boat in game.boats if other_boat.current_tile == boat.path[0]), False):
                 # TODO: also check for surrounding occupied boat tiles, not just the one we're trying to access
-                game.boats_path[i] = pf.find_path(game, game.boats_current_tile[i], game.boats_path[i][-1], [game.boats_path[i][0]]) 
+                boat.path = pf.find_path(game, boat.current_tile, boat.path[-1], [boat.path[0]]) 
                 continue
 
-            game.boats_destination_tile[i] = game.boats_path[i].pop(0)
-            game.boats_current_tile[i] = game.boats_destination_tile[i]
+            boat.destination_tile = boat.path.pop(0)
+            boat.current_tile = boat.destination_tile # Hum?
 
-        boat_dest = grid.index_to_global_coord(game, boat_dest_tile) 
-        if boat_dest == None:
+        boat_dest_xy = grid.index_to_global_coord(game, boat.destination_tile) 
+        if boat_dest_xy == None:
             continue
 
-        movement = game.boat_speed_const * game.boats_speed[i] * game.dt
+        movement = game.boat_speed_const * boat.speed * game.dt
 
         x_done = False
-        left_x = boat_dest[0] - game.boats_rect[i].x - (game.boats_rect[i].w/2)
-        game.boats_direction[i].x = 1 if left_x >= 0 else -1
-        mov_x = movement * game.boats_direction[i].x
+        left_x = boat_dest_xy[0] - boat.rect.x - (boat.rect.w/2)
+        boat.direction.x = 1 if left_x >= 0 else -1
+        mov_x = movement * boat.direction.x
         if abs(left_x) <= abs(mov_x):
-            game.boats_rect[i].x = boat_dest[0] - (game.boats_rect[i].w / 2)
+            boat.rect.x = boat_dest_xy[0] - (boat.rect.w / 2)
             x_done = True
         else:
-            game.boats_rect[i].x += mov_x
+            boat.rect.x += mov_x
 
         y_done = False
-        left_y = boat_dest[1] - game.boats_rect[i].y - (game.boats_rect[i].h/2)
-        game.boats_direction[i].y = 1 if left_y >= 0 else -1
-        mov_y = movement * game.boats_direction[i].y
+        left_y = boat_dest_xy[1] - boat.rect.y - (boat.rect.h/2)
+        boat.direction.y = 1 if left_y >= 0 else -1
+        mov_y = movement * boat.direction.y
         if abs(left_y) <= abs(mov_y):
-            game.boats_rect[i].y = boat_dest[1] - (game.boats_rect[i].h / 2)
+            boat.rect.y = boat_dest_xy[1] - (boat.rect.h / 2)
             y_done = True
         else:
-            game.boats_rect[i].y += mov_y
+            boat.rect.y += mov_y
 
         if x_done and y_done:
-            game.boats_destination_tile[i] = -1
+            boat.destination_tile = -1
 
 def draw_boats(game: gs.GameState, screen: pygame.Surface):
-    for i, boat_rect in enumerate(game.boats_rect):
-        boat_img = game.boat_imgs[game.boats_img_idx[i]]
-        if game.boats_direction[i].x == 1:
+    for boat in game.boats:
+        boat_img = game.boat_imgs[boat.img_idx]
+        if boat.direction.x == 1:
             boat_img = pygame.transform.flip(boat_img, True, False)
 
-        screen.blit(boat_img, boat_rect)
+        screen.blit(boat_img, boat.rect)
 
-    if game.show_boxes:
-        for boat_rect in game.boats_rect:
+        if game.show_boxes:
             pygame.draw.lines(screen, pygame.Color(255, 0, 0), True, [
-                (boat_rect.x, boat_rect.y),
-                (boat_rect.x + boat_rect.w, boat_rect.y),
-                (boat_rect.x + boat_rect.w, boat_rect.y + boat_rect.h),
-                (boat_rect.x, boat_rect.y + boat_rect.h),
+                (boat.rect.x, boat.rect.y),
+                (boat.rect.x + boat.rect.w, boat.rect.y),
+                (boat.rect.x + boat.rect.w, boat.rect.y + boat.rect.h),
+                (boat.rect.x, boat.rect.y + boat.rect.h),
             ])

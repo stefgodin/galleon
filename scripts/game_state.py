@@ -3,6 +3,16 @@ from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
+class Boat:
+    rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)
+    current_tile: int = -1
+    img_idx: pygame.Surface = -1
+    destination_tile: int = -1
+    path: list[int] = []
+    direction: pygame.Vector2 = pygame.Vector2(0, 0)
+    speed: int = 0
+
+
 class GameState:
     screen: pygame.Surface|None = None
 
@@ -25,10 +35,4 @@ class GameState:
     boat_imgs: list[pygame.Surface] = []
     boat_speed_const: int = 0.3
     boat_base_size: int = 48
-    boats_rect: list[pygame.Rect] = []
-    boats_current_tile: list[int] = []
-    boats_img_idx: list[pygame.Surface] = []
-    boats_destination_tile: list[int] = []
-    boats_path: list[list[int]] = []
-    boats_direction: list[pygame.Vector2] = []
-    boats_speed: list[int] = []
+    boats: list[Boat] = []

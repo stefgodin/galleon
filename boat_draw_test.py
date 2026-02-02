@@ -1,6 +1,6 @@
 import pygame
 import random
-import scripts.boat as boat
+import scripts.boat as b
 import scripts.fake_grid as grid
 import scripts.game_state as gs
 import scripts.find_path as pf
@@ -14,12 +14,13 @@ def run():
 
     game = gs.GameState()
     
-    boat.setup_boats(game)
+    b.setup_boats(game)
     grid.setup_grid(game)
     for _ in range(0, 10):
-        id = boat.add_boat(game)
-        game.boats_current_tile[id] = random.randint(0, game.fake_grid_tiles.__len__() - 1)
-        game.boats_rect[id].center = grid.index_to_global_coord(game, game.boats_current_tile[id])
+        i = b.add_boat(game)
+        boat = game.boats[i]
+        boat.current_tile = random.randint(0, game.fake_grid_tiles.__len__() - 1)
+        boat.rect.center = grid.index_to_global_coord(game, boat.current_tile)
 
     while running:
         # Input
@@ -38,19 +39,19 @@ def run():
         # Update
         game.show_boxes = game.key_1
 
-        for i, path in enumerate(game.boats_path):
-            if path.__len__():
+        for boat in game.boats:
+            if boat.path.__len__():
                continue 
             
             tile = random.randint(0, game.fake_grid_tiles.__len__() - 1)
-            game.boats_path[i] = pf.find_path(game, game.boats_current_tile[i], tile)
+            boat.path = pf.find_path(game, boat.current_tile, tile)
 
 
         if game.mouse_pos is not None:
             if game.mouse_left:
                 final_tile = grid.global_coord_to_index(game, game.mouse_pos[0], game.mouse_pos[1])
-                for i, current_tile in enumerate(game.boats_current_tile): 
-                    game.boats_path[i] = pf.find_path(game, current_tile, final_tile)
+                for boat in game.boats: 
+                    boat.path = pf.find_path(game, boat.current_tile, final_tile)
 
             grid_coord = grid.global_to_grid_coord(game, game.mouse_pos[0], game.mouse_pos[1])
             if grid_coord is not None:
@@ -58,13 +59,13 @@ def run():
             else:
                 game.fake_grid_hovered_tile = -1
 
-        boat.move_along_path(game)
+        b.move_along_path(game)
 
         # Render
         screen.fill("white")
 
         grid.draw_grid(game, screen)
-        boat.draw_boats(game, screen)
+        b.draw_boats(game, screen)
 
         pygame.display.flip()
 
