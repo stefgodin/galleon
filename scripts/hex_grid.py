@@ -57,11 +57,30 @@ def draw_grid(screen):
 
 def highlight_current_tile(screen):
     mouse_pos = pygame.mouse.get_pos()
+    mouse_y = 2 * mouse_pos[1] / tile_vertical_spacing
     x = round(mouse_pos[0] / tile_horizontal_spacing)
     y = round(2 * mouse_pos[1] / tile_vertical_spacing)
     z = 6
+    if (x + y) % 2 != 0:
+        if mouse_y > y:
+            y += 1
+        else:
+            y -= 1
     hex_coords = position_to_coords(pygame.Vector3(x,y,z))
     draw_tile(screen, hex_coords, highlight_line_color)
+
+def give_me_tile():
+    mouse_pos = pygame.mouse.get_pos()
+    mouse_y = 2 * mouse_pos[1] / tile_vertical_spacing
+    x = round(mouse_pos[0] / tile_horizontal_spacing)
+    y = round(2 * mouse_pos[1] / tile_vertical_spacing)
+    if (x + y) % 2 != 0:
+        if mouse_y > y:
+            y += 1
+        else:
+            y -= 1
+    z = 6
+    print(x, y)
 
 def generate_grid(screen):
     map_colums = screen.get_width() / SIZE
