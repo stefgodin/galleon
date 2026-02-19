@@ -17,6 +17,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            grid.give_me_tile()
+
 
     grid.draw_grid(screen)
     grid.highlight_current_tile(screen)
