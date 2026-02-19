@@ -10,15 +10,20 @@
 			- https://www.youtube.com/watch?v=q77-uxsDZow
 	- [ ] Path find on hex grid
 - [ ] Make a combat system (enemy + canons + hp) ~ Steg
-    - [ ] City entities
-	- [ ] Teams to assign boats and cities to
-	- [ ] Cities and boats attack each other
+    - [x] City entities ✅ 2026-02-18
+	- [x] Teams to assign boats and cities to ✅ 2026-02-18
+	- [x] Cities and boats attack each other ✅ 2026-02-18
 	- [ ] City capture system (fighting and capturing cities)
 	- [ ] Boat destruction and respawn
 - [ ] Win conditions and game modes
 	- [ ] Have the most cities captured after time or capture all cities for x seconds
 - [ ] Resource system (counter + stealing + city resource + island resource)
 	- [ ] Upgrades
+- [ ] AI enemies
+- [ ] UI
+    - [ ] HUD
+	- [ ] In game menu
+	- [ ] Main menu
 
 
 

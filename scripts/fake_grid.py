@@ -5,7 +5,11 @@ import random
 class GridTiles:
     VOID = 0
     SEA = 1
-    LAND = 2
+    ISLAND = 2
+    CITY = 3
+    COVE = 4
+    LAND = 5
+    CHOSEN = 6
 
 def setup_grid(game: gs.GameState):
     for _ in range(0, game.fake_grid_x * game.fake_grid_y):
@@ -86,6 +90,7 @@ def draw_grid(game: gs.GameState, surface: pygame.Surface):
         GridTiles.VOID: "black",
         GridTiles.SEA: pygame.Color(60, 160, 240),
         GridTiles.LAND: pygame.Color(240, 240, 30),
+        GridTiles.CITY: pygame.Color(100, 100, 100)
     }
     for y in range(0, game.fake_grid_y):
         for x in range(0, game.fake_grid_x):
