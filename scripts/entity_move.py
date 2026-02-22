@@ -2,7 +2,7 @@ import scripts.fake_grid as grid
 import scripts.find_path as pf
 import scripts.game_state as gs
 
-def move_to_dest(game: gs.GameState):
+def update_movement(game: gs.GameState):
     for entity in game.entities:
         if not entity.can_move:
             continue

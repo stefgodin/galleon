@@ -66,7 +66,7 @@ class BoatDrawTest(GameRunner):
             else:
                 game_state.fake_grid_hovered_tile = -1
 
-        move.move_to_dest(game_state)
+        move.update_movement(game_state)
 
     # Called once per frame to redraw
     @staticmethod
