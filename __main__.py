@@ -1,3 +1,3 @@
-from scripts.run import run
+from scripts.game_runner import GameRunner
 
-run()
+game = GameRunner()

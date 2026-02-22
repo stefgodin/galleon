@@ -8,14 +8,18 @@ if TYPE_CHECKING:
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
 class GameState:
-    screen: pygame.Surface|None = None
+    should_close = False
+    screen_width: int = 1280
+    screen_height: int = 720
 
     mouse_pos: tuple[int, int]|None = None
     mouse_left: bool = False
     key_1: bool = False
 
-    tt: int = 0 #ms
-    dt: int = 0 #ms
+    game_t: int = 0 #ms
+    delta_t: int = 0 #ms
+    tick_t: int = 0 #ms
+    tick_rate: int = 50
 
     # Fake grid
     fake_grid_border_thickness = 2

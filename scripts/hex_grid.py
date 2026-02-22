@@ -2,6 +2,7 @@ import math
 import pygame
 import random
 from enum import Enum
+import scripts.game_state as gs
 
 SIZE = 20
 line_color = pygame.Color(0,0,0)
@@ -82,11 +83,9 @@ def give_me_tile():
     z = 6
     print(x, y)
 
-def generate_grid(screen):
-    map_colums = screen.get_width() / SIZE
-    map_rows = screen.get_height() / (math.sqrt(3) * SIZE /2)
-    
-    screen.fill("white")
+def generate_grid(game_state: gs.GameState):
+    map_colums = game_state.screen_width / SIZE
+    map_rows = game_state.screen_height / (math.sqrt(3) * SIZE /2)
 
     for c in range(int(map_colums+1)):
         for r in range(int(map_rows+1)):

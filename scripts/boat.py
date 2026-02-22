@@ -65,7 +65,7 @@ def move_to_dest(game: gs.GameState):
         if boat_dest_xy == None:
             continue
 
-        movement = game.boat_speed_const * boat.speed * game.dt
+        movement = game.boat_speed_const * boat.speed * game.delta_t
 
         x_done = False
         left_x = boat_dest_xy[0] - boat.rect.x - (boat.rect.w/2)
