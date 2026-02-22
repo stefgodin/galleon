@@ -5,16 +5,18 @@ import scripts.boat as b
 import scripts.fake_grid as grid
 import scripts.game_state as gs
 import scripts.find_path as pf
+import scripts.entity as en
+import scripts.assets as ast
 
 class BoatDrawTest(GameRunner):
     # Called once at the start of the game
     @staticmethod
     def init(game_state: gs.GameState):
-        b.setup_boats(game_state)
+        ast.load_assets(game_state)
         grid.setup_grid(game_state)
         for _ in range(0, 10):
             i = b.add_boat(game_state)
-            boat = game_state.boats[i]
+            boat = game_state.entities[i]
             boat.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
             boat.rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
 
@@ -41,8 +43,8 @@ class BoatDrawTest(GameRunner):
     def update(game_state: gs.GameState):
         game_state.show_boxes = game_state.key_1
 
-        for boat in game_state.boats:
-            if boat.path.__len__():
+        for boat in game_state.entities:
+            if boat.type != en.EntityType.BOAT or boat.path.__len__():
                continue 
             
             tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
@@ -52,7 +54,10 @@ class BoatDrawTest(GameRunner):
         if game_state.mouse_pos is not None:
             if game_state.mouse_left:
                 final_tile = grid.global_coord_to_index(game_state, game_state.mouse_pos[0], game_state.mouse_pos[1])
-                for boat in game_state.boats: 
+                for boat in game_state.entities: 
+                    if boat.type != en.EntityType.BOAT:
+                        continue 
+
                     boat.path = pf.find_path(game_state, boat.current_tile, final_tile)
 
             grid_coord = grid.global_to_grid_coord(game_state, game_state.mouse_pos[0], game_state.mouse_pos[1])
@@ -61,7 +66,7 @@ class BoatDrawTest(GameRunner):
             else:
                 game_state.fake_grid_hovered_tile = -1
 
-        b.move_along_path(game_state)
+        b.move_to_dest(game_state)
 
     # Called once per frame to redraw
     @staticmethod

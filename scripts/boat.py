@@ -3,57 +3,37 @@ import pygame
 import scripts.fake_grid as grid
 import scripts.find_path as pf
 import scripts.game_state as gs
-
-class BoatImg:
-    BASE = 0
-
-class Boat:
-    rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)
-    current_tile: int = -1
-    img_idx: pygame.Surface = -1
-    destination_tile: int = -1
-    path: list[int] = []
-    direction: pygame.Vector2 = pygame.Vector2(0, 0)
-    speed: int = 0
-    team: int = 0
-    hp: int = 10
-    max_hp: int = 10
-    attack_speed: int = 1000 # rate in ms
-    last_shot_at: int = -1
-
-def setup_boats(game: gs.GameState):
-    base_img = pygame.image.load(os.path.join(gs.ROOT_DIR,"assets","boat.png")).convert_alpha()
-    base_img = pygame.transform.scale(base_img, (game.boat_base_size, game.boat_base_size))
-    game.boat_imgs.append(base_img) # 0
-
+import scripts.entity as en
+import scripts.assets as ast
 
 def add_boat(game: gs.GameState) -> int:
-    idx = game.boats.__len__()
+    idx = game.entities.__len__()
     boat_rect = pygame.Rect(0, 0, game.boat_base_size, game.boat_base_size)
-    boat = Boat()
+    boat = en.Entity()
+    boat.type = en.EntityType.BOAT
     boat.rect = boat_rect
     boat.current_tile = None
-    boat.img_idx = BoatImg.BASE
+    boat.sprite_id = ast.Assets.BOAT_BASE
     boat.destination_tile = -1
     boat.path = []
     boat.direction = pygame.Vector2(0, 0)
     boat.speed = 1
-    boat.team = 0
-    boat.hp = 10
-    boat.max_hp = 10
-    boat.attack_speed = 1000
-    boat.last_shot_at = -1
+    boat.team =  0
+    boat.hp =  10
+    boat.max_hp =  10
+    boat.attack_speed =  1000
+    boat.last_shot_t =  0
 
-    game.boats.append(boat)
+    game.entities.append(boat)
     return idx
 
-def move_along_path(game: gs.GameState):
-    move_to_dest(game)
-
 def move_to_dest(game: gs.GameState):
-    for boat in game.boats:
+    for boat in game.entities:
+        if boat.type != en.EntityType.BOAT:
+            continue
+        
         if boat.destination_tile == -1 and boat.path.__len__():
-            if next((other_boat for other_boat in game.boats if other_boat.current_tile == boat.path[0]), False):
+            if next((other_boat for other_boat in game.entities if boat.type == en.EntityType.BOAT and other_boat.current_tile == boat.path[0]), False):
                 # TODO: also check for surrounding occupied boat tiles, not just the one we're trying to access
                 boat.path = pf.find_path(game, boat.current_tile, boat.path[-1], [boat.path[0]]) 
                 continue
@@ -91,15 +71,22 @@ def move_to_dest(game: gs.GameState):
             boat.destination_tile = -1
 
 def draw_boats(game: gs.GameState, screen: pygame.Surface):
-    for boat in game.boats:
-        boat_img = game.boat_imgs[boat.img_idx]
+    for boat in game.entities:
+        if boat.type != en.EntityType.BOAT:
+            continue
+
+        boat_img = game.assets[boat.sprite_id]
+        boat_img = pygame.transform.scale(boat_img, (game.boat_base_size, game.boat_base_size))
         if boat.direction.x == 1:
             boat_img = pygame.transform.flip(boat_img, True, False)
 
         screen.blit(boat_img, boat.rect)
 
 def draw_boats_ui(game: gs.GameState, screen: pygame.Surface):
-    for boat in game.boats:
+    for boat in game.entities:
+        if boat.type != en.EntityType.BOAT:
+            continue
+
         # Health bar
         [x, y] = boat.rect.midtop
         health_bar_width = 10 * boat.max_hp

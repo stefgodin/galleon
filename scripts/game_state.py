@@ -2,8 +2,7 @@ import pygame
 from pathlib import Path
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from scripts.city import City
-    from scripts.boat import Boat
+    from scripts.entity import Entity
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,12 +28,10 @@ class GameState:
     fake_grid_tiles: list[int] = []
     fake_grid_hovered_tile: int = -1
 
-    # Boats
+    # Entities
+    entities: list['Entity'] = []
     show_boxes: bool = False
-    boat_imgs: list[pygame.Surface] = []
+    assets: dict[str, pygame.Surface] = {}
     boat_speed_const: int = 0.1
     boat_base_size: int = 48
-    boats: list['Boat'] = []
 
-    # Cities
-    cities: list['City'] = []
