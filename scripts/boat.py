@@ -11,6 +11,8 @@ def add_boat(game: gs.GameState) -> int:
     boat_rect = pygame.Rect(0, 0, game.boat_base_size, game.boat_base_size)
     boat = en.Entity()
     boat.type = en.EntityType.BOAT
+    boat.can_fight = True
+    boat.can_move = True
     boat.rect = boat_rect
     boat.current_tile = None
     boat.sprite_id = ast.Assets.BOAT_BASE
@@ -28,47 +30,47 @@ def add_boat(game: gs.GameState) -> int:
     return idx
 
 def move_to_dest(game: gs.GameState):
-    for boat in game.entities:
-        if boat.type != en.EntityType.BOAT:
+    for entity in game.entities:
+        if not entity.can_move:
             continue
         
-        if boat.destination_tile == -1 and boat.path.__len__():
-            if next((other_boat for other_boat in game.entities if boat.type == en.EntityType.BOAT and other_boat.current_tile == boat.path[0]), False):
+        if entity.destination_tile == -1 and entity.path.__len__():
+            if next((other_entity for other_entity in game.entities if entity.can_move and other_entity.current_tile == entity.path[0]), False):
                 # TODO: also check for surrounding occupied boat tiles, not just the one we're trying to access
-                boat.path = pf.find_path(game, boat.current_tile, boat.path[-1], [boat.path[0]]) 
+                entity.path = pf.find_path(game, entity.current_tile, entity.path[-1], [entity.path[0]]) 
                 continue
 
-            boat.destination_tile = boat.path.pop(0)
-            boat.current_tile = boat.destination_tile # Hum?
+            entity.destination_tile = entity.path.pop(0)
+            entity.current_tile = entity.destination_tile # Hum?
 
-        boat_dest_xy = grid.index_to_global_coord(game, boat.destination_tile) 
+        boat_dest_xy = grid.index_to_global_coord(game, entity.destination_tile) 
         if boat_dest_xy == None:
             continue
 
-        movement = game.boat_speed_const * boat.speed * game.delta_t
+        movement = game.boat_speed_const * entity.speed * game.delta_t
 
         x_done = False
-        left_x = boat_dest_xy[0] - boat.rect.x - (boat.rect.w/2)
-        boat.direction.x = 1 if left_x >= 0 else -1
-        mov_x = movement * boat.direction.x
+        left_x = boat_dest_xy[0] - entity.rect.x - (entity.rect.w/2)
+        entity.direction.x = 1 if left_x >= 0 else -1
+        mov_x = movement * entity.direction.x
         if abs(left_x) <= abs(mov_x):
-            boat.rect.x = boat_dest_xy[0] - (boat.rect.w / 2)
+            entity.rect.x = boat_dest_xy[0] - (entity.rect.w / 2)
             x_done = True
         else:
-            boat.rect.x += mov_x
+            entity.rect.x += mov_x
 
         y_done = False
-        left_y = boat_dest_xy[1] - boat.rect.y - (boat.rect.h/2)
-        boat.direction.y = 1 if left_y >= 0 else -1
-        mov_y = movement * boat.direction.y
+        left_y = boat_dest_xy[1] - entity.rect.y - (entity.rect.h/2)
+        entity.direction.y = 1 if left_y >= 0 else -1
+        mov_y = movement * entity.direction.y
         if abs(left_y) <= abs(mov_y):
-            boat.rect.y = boat_dest_xy[1] - (boat.rect.h / 2)
+            entity.rect.y = boat_dest_xy[1] - (entity.rect.h / 2)
             y_done = True
         else:
-            boat.rect.y += mov_y
+            entity.rect.y += mov_y
 
         if x_done and y_done:
-            boat.destination_tile = -1
+            entity.destination_tile = -1
 
 def draw_boats(game: gs.GameState, screen: pygame.Surface):
     for boat in game.entities:

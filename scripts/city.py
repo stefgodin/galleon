@@ -7,6 +7,7 @@ def add_city(game: gs.GameState) -> int:
     idx = game.entities.__len__()
     city = en.Entity()
     city.type = en.EntityType.CITY
+    city.can_fight = True
     city.current_tile = -1
     city.hp = 8
     city.max_hp = 8

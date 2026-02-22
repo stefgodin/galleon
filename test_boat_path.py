@@ -5,7 +5,6 @@ import scripts.boat as b
 import scripts.fake_grid as grid
 import scripts.game_state as gs
 import scripts.find_path as pf
-import scripts.entity as en
 import scripts.assets as ast
 
 class BoatDrawTest(GameRunner):
@@ -43,22 +42,22 @@ class BoatDrawTest(GameRunner):
     def update(game_state: gs.GameState):
         game_state.show_boxes = game_state.key_1
 
-        for boat in game_state.entities:
-            if boat.type != en.EntityType.BOAT or boat.path.__len__():
+        for entity in game_state.entities:
+            if not entity.can_move or entity.path.__len__():
                continue 
             
             tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
-            boat.path = pf.find_path(game_state, boat.current_tile, tile)
+            entity.path = pf.find_path(game_state, entity.current_tile, tile)
 
 
         if game_state.mouse_pos is not None:
             if game_state.mouse_left:
                 final_tile = grid.global_coord_to_index(game_state, game_state.mouse_pos[0], game_state.mouse_pos[1])
-                for boat in game_state.entities: 
-                    if boat.type != en.EntityType.BOAT:
+                for entity in game_state.entities: 
+                    if not entity.can_move:
                         continue 
 
-                    boat.path = pf.find_path(game_state, boat.current_tile, final_tile)
+                    entity.path = pf.find_path(game_state, entity.current_tile, final_tile)
 
             grid_coord = grid.global_to_grid_coord(game_state, game_state.mouse_pos[0], game_state.mouse_pos[1])
             if grid_coord is not None:
