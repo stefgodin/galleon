@@ -6,6 +6,7 @@ import scripts.fake_grid as grid
 import scripts.game_state as gs
 import scripts.find_path as pf
 import scripts.assets as ast
+import scripts.entity_move as move
 
 class BoatDrawTest(GameRunner):
     # Called once at the start of the game
@@ -17,7 +18,7 @@ class BoatDrawTest(GameRunner):
             i = b.add_boat(game_state)
             boat = game_state.entities[i]
             boat.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
-            boat.rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
+            boat.sprite_rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
 
     # Called on every input event
     @staticmethod
@@ -65,7 +66,7 @@ class BoatDrawTest(GameRunner):
             else:
                 game_state.fake_grid_hovered_tile = -1
 
-        b.move_to_dest(game_state)
+        move.move_to_dest(game_state)
 
     # Called once per frame to redraw
     @staticmethod

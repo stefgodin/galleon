@@ -7,6 +7,7 @@ import scripts.game_state as gs
 import scripts.find_path as pf
 import scripts.entity as en
 import scripts.assets as ast
+import scripts.entity_move as move
 from scripts.game_runner import GameRunner
 
 class CombatTest(GameRunner):
@@ -19,7 +20,7 @@ class CombatTest(GameRunner):
             i = b.add_boat(game_state)
             boat = game_state.entities[i]
             boat.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
-            boat.rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
+            boat.sprite_rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
             boat.team = 1 if idx == 0 else 2
         
         for _ in range(0, 5):
@@ -96,7 +97,7 @@ class CombatTest(GameRunner):
             else:
                 game_state.fake_grid_hovered_tile = -1
 
-        b.move_to_dest(game_state)
+        move.move_to_dest(game_state)
     
     # Called once per frame to redraw
     @staticmethod
