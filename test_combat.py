@@ -1,14 +1,13 @@
 import pygame
 import random
-import scripts.boat as b
-import scripts.city as c
 import scripts.fake_grid as grid
 import scripts.game_state as gs
 import scripts.find_path as pf
 import scripts.assets as ast
-import scripts.entity_move as emove
-import scripts.entity_combat as ecombat
-import scripts.entity_draw as edraw
+import scripts.entity_move as en_move
+import scripts.entity_combat as en_combat
+import scripts.entity_draw as en_draw
+import scripts.entity as en
 from scripts.game_runner import GameRunner
 
 class CombatTest(GameRunner):
@@ -18,14 +17,14 @@ class CombatTest(GameRunner):
         ast.load_assets(game_state)
         grid.setup_grid(game_state)
         for idx in range(0, 2):
-            i = b.add_boat(game_state)
+            i = en.add_boat(game_state)
             boat = game_state.entities[i]
             boat.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
             boat.sprite_rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
             boat.team = 1 if idx == 0 else 2
         
         for _ in range(0, 5):
-            i = c.add_city(game_state)
+            i = en.add_city(game_state)
             city = game_state.entities[i]
             city.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
             game_state.fake_grid_tiles[city.current_tile] = grid.GridTiles.CITY
@@ -74,13 +73,13 @@ class CombatTest(GameRunner):
             else:
                 game_state.fake_grid_hovered_tile = -1
 
-        emove.update_movement(game_state)
-        ecombat.update_combat(game_state)
+        en_move.update_movement(game_state)
+        en_combat.update_combat(game_state)
     
     # Called once per frame to redraw
     @staticmethod
     def render(game_state: gs.GameState, render_target: pygame.Surface):
         grid.draw_grid(game_state, render_target)
-        edraw.draw_entities(game_state, render_target)
+        en_draw.draw_entities(game_state, render_target)
 
 CombatTest().run()
