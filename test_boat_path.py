@@ -6,7 +6,8 @@ import scripts.fake_grid as grid
 import scripts.game_state as gs
 import scripts.find_path as pf
 import scripts.assets as ast
-import scripts.entity_move as move
+import scripts.entity_move as emove
+import scripts.entity_draw as edraw
 
 class BoatDrawTest(GameRunner):
     # Called once at the start of the game
@@ -66,12 +67,12 @@ class BoatDrawTest(GameRunner):
             else:
                 game_state.fake_grid_hovered_tile = -1
 
-        move.update_movement(game_state)
+        emove.update_movement(game_state)
 
     # Called once per frame to redraw
     @staticmethod
     def render(game_state: gs.GameState, render_target: pygame.Surface):
         grid.draw_grid(game_state, render_target)
-        b.draw_boats(game_state, render_target)
+        edraw.draw_entities(game_state, render_target)
 
 BoatDrawTest().run()
