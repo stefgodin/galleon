@@ -18,9 +18,9 @@ class Entity:
     # Movement
     can_move = False
     current_tile: int = -1
-    current_tile_dist: int = -1
-    destination_tile: int = -1
-    destination_tile_dist: int = -1
+    prev_tile: int = -1
+    next_tile: int = -1
+    next_tile_dist: int = 0
     path: list[int] = []
     direction: pygame.Vector2 = pygame.Vector2(0, 0)
     speed: int = 0
@@ -44,11 +44,12 @@ def add_boat(game: gs.GameState) -> int:
     
     boat.can_move = True
     boat.current_tile = -1
-    boat.current_tile_dist = -1
-    boat.destination_tile = -1
+    boat.prev_tile = -1
+    boat.next_tile = -1
+    boat.next_tile_dist = 0
     boat.path = []
     boat.direction = pygame.Vector2(0, 0)
-    boat.speed = 1
+    boat.speed = 20 # ticks required to move 1 tile away
 
     boat.can_fight = True
     boat.team =  0

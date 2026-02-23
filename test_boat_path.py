@@ -20,6 +20,7 @@ class BoatDrawTest(GameRunner):
             boat = game_state.entities[i]
             boat.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
             boat.sprite_rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
+            boat.speed = random.randint(5, 20)
 
     # Called on every input event
     @staticmethod
@@ -49,7 +50,7 @@ class BoatDrawTest(GameRunner):
                continue 
             
             tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
-            entity.path = pf.find_path(game_state, entity.current_tile, tile)
+            en_move.change_entity_path(game_state, entity, tile)
 
 
         if game_state.mouse_pos is not None:
@@ -59,7 +60,7 @@ class BoatDrawTest(GameRunner):
                     if not entity.can_move:
                         continue 
 
-                    entity.path = pf.find_path(game_state, entity.current_tile, final_tile)
+                    en_move.change_entity_path(game_state, entity, final_tile)
 
             grid_coord = grid.global_to_grid_coord(game_state, game_state.mouse_pos[0], game_state.mouse_pos[1])
             if grid_coord is not None:

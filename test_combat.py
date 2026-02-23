@@ -57,7 +57,7 @@ class CombatTest(GameRunner):
             
             # Automatically controlling entities movements that are not in team 1
             tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
-            entity.path = pf.find_path(game_state, entity.current_tile, tile)
+            en_move.change_entity_path(game_state, entity, tile)
 
 
         if game_state.mouse_pos is not None:
@@ -65,7 +65,7 @@ class CombatTest(GameRunner):
                 final_tile = grid.global_coord_to_index(game_state, game_state.mouse_pos[0], game_state.mouse_pos[1])
                 for entity in game_state.entities: 
                     if entity.can_move and entity.team == 1:
-                        entity.path = pf.find_path(game_state, entity.current_tile, final_tile)
+                        en_move.change_entity_path(game_state, entity, final_tile)
 
             grid_coord = grid.global_to_grid_coord(game_state, game_state.mouse_pos[0], game_state.mouse_pos[1])
             if grid_coord is not None:
