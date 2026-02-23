@@ -70,7 +70,7 @@ def calc_dist(game: gs.GameState, from_tile: int, to_tile: int) -> int:
 def is_path_tile(game: gs.GameState, tile: int) -> bool:
     return game.fake_grid_tiles[tile] == GridTiles.SEA
 
-def neighbor_tiles(game: gs.GameState, idx: int, path_only: bool) -> list[int]:
+def neighbor_tiles(game: gs.GameState, idx: int) -> list[int]:
     neighbors = []
     xy = index_to_coord(game, idx)
     if xy is None:
@@ -83,7 +83,7 @@ def neighbor_tiles(game: gs.GameState, idx: int, path_only: bool) -> list[int]:
         coord_to_index(game, x, y + 1),
         coord_to_index(game, x + 1, y),
     ] 
-    return [n for n in neighbors if n > -1 and (not path_only or is_path_tile(game, n))]
+    return [n for n in neighbors if n > -1]
 
 def draw_grid(game: gs.GameState, surface: pygame.Surface):
     colors = {

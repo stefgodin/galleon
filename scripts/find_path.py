@@ -22,7 +22,7 @@ def find_closest_path_tiles(game: gs.GameState, tile: int, not_moveable_tiles: l
             if grid.is_path_tile(game, tile) and tile not in not_moveable_tiles:
                 tiles.append(tile)
             else:
-                next_check_batch += grid.neighbor_tiles(game, tile, False)
+                next_check_batch += grid.neighbor_tiles(game, tile)
         
         to_check = next_check_batch
     
@@ -62,8 +62,8 @@ def find_path(game: gs.GameState, from_tile: int, to_tile: int, ignore_tiles: li
         if current == to_tile:
             break # Done
 
-        for neighbor in grid.neighbor_tiles(game, current, True):
-            if neighbor in ignore_tiles:
+        for neighbor in grid.neighbor_tiles(game, current):
+            if not grid.is_path_tile(game, current) or neighbor in ignore_tiles:
                 continue
 
             neighbor_g_score = g_scores[current] + grid.calc_dist(game, current, neighbor)

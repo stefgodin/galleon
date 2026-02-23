@@ -13,7 +13,7 @@ class Entity:
 
     # Render
     sprite_rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)
-    sprite_id: pygame.Surface|None = None
+    sprite_id: str|None = None
 
     # Movement
     can_move = False

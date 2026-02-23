@@ -12,7 +12,7 @@ def update_combat(game_state: gs.GameState):
             continue
 
         atk_target_list: list[en.Entity] = []
-        atk_tiles = grid.neighbor_tiles(game_state, entity.current_tile, False)
+        atk_tiles = grid.neighbor_tiles(game_state, entity.current_tile)
         for other_entity in game_state.entities:
             if not entity.can_fight:
                 continue

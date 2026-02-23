@@ -34,7 +34,7 @@ def draw_boat(game_state: gs.GameState, render_target: pygame.Surface, boat: en.
 
 
         if game_state.show_boxes:
-            neihbors = grid.neighbor_tiles(game_state, boat.current_tile, False)
+            neihbors = grid.neighbor_tiles(game_state, boat.current_tile)
             for tile in neihbors:
                 [x, y] = grid.index_to_global_coord(game_state, tile)
                 s = game_state.fake_grid_tile_size
@@ -55,7 +55,7 @@ def draw_city(game: gs.GameState, screen: pygame.Surface, city: en.Entity, layer
     pygame.draw.rect(surface= screen, color= 'red', rect= [x - (health_bar_width/2), y - 14, 10 * city.hp, 10])
 
     if game.show_boxes:
-        neihbors = grid.neighbor_tiles(game, city.current_tile, False)
+        neihbors = grid.neighbor_tiles(game, city.current_tile)
         for tile in neihbors:
             [x, y] = grid.index_to_global_coord(game, tile)
             s = game.fake_grid_tile_size
