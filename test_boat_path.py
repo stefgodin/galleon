@@ -38,7 +38,7 @@ class BoatDrawTest(GameRunner):
     # Called every fixed tick based on tick_rate (simulation speed), is not tied to framerate
     @staticmethod
     def tick(game_state: gs.GameState):
-        pass
+        en_move.tick_movement(game_state)
 
     # Called once per frame for real-time updates (or interpolation)
     @staticmethod
@@ -68,7 +68,7 @@ class BoatDrawTest(GameRunner):
             else:
                 game_state.fake_grid_hovered_tile = -1
 
-        en_move.update_movement(game_state)
+        en_move.update_movement_view(game_state)
 
     # Called once per frame to redraw
     @staticmethod

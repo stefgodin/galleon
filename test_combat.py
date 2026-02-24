@@ -44,7 +44,8 @@ class CombatTest(GameRunner):
     # Called every fixed tick based on tick_rate (simulation speed), is not tied to framerate
     @staticmethod
     def tick(game_state: gs.GameState):
-        pass
+        en_move.tick_movement(game_state)
+        en_combat.tick_combat(game_state)
     
     # Called once per frame for real-time updates (or interpolation)
     @staticmethod
@@ -72,9 +73,8 @@ class CombatTest(GameRunner):
                 game_state.fake_grid_hovered_tile = grid.coord_to_index(game_state, grid_coord[0], grid_coord[1])
             else:
                 game_state.fake_grid_hovered_tile = -1
-
-        en_move.update_movement(game_state)
-        en_combat.update_combat(game_state)
+        
+        en_move.update_movement_view(game_state)
     
     # Called once per frame to redraw
     @staticmethod

@@ -20,17 +20,18 @@ class Entity:
     current_tile: int = -1
     prev_tile: int = -1
     next_tile: int = -1
-    next_tile_dist: int = 0
+    next_tile_dist: float = 0.0
     path: list[int] = []
     direction: pygame.Vector2 = pygame.Vector2(0, 0)
-    speed: int = 0
+    speed: int = 0 # in ticks/tile
 
     # Combat
     can_fight = False
+    defeated = False
     team: int = 0
     hp: int = 0
     max_hp: int = 0
-    attack_speed: int = 0
+    attack_speed: int = 0 # in ticks/attack
     last_shot_t: int = 0
 
 def add_boat(game: gs.GameState) -> int:
@@ -46,16 +47,17 @@ def add_boat(game: gs.GameState) -> int:
     boat.current_tile = -1
     boat.prev_tile = -1
     boat.next_tile = -1
-    boat.next_tile_dist = 0
+    boat.next_tile_dist = 0.0
     boat.path = []
     boat.direction = pygame.Vector2(0, 0)
-    boat.speed = 20 # ticks required to move 1 tile away
+    boat.speed = 20
 
     boat.can_fight = True
+    boat.defeated = False
     boat.team =  0
     boat.hp =  10
     boat.max_hp =  10
-    boat.attack_speed =  1000
+    boat.attack_speed = 20
     boat.last_shot_t =  0
 
     game.entities.append(boat)
@@ -68,10 +70,11 @@ def add_city(game: gs.GameState) -> int:
     city.current_tile = -1
 
     city.can_fight = True
+    city.defeated = False
     city.hp = 8
     city.max_hp = 8
     city.team = 0
-    city.attack_speed = 1000
+    city.attack_speed = 20
     city.last_shot_t = 0
 
     game.entities.append(city)

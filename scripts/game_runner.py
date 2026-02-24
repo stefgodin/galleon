@@ -19,10 +19,10 @@ class GameRunner:
                 else:
                     self.input(game_state, event)
             
-            diff_t = game_state.game_t - game_state.tick_t
-            while diff_t >= game_state.tick_rate:
-                diff_t -= game_state.tick_rate
-                game_state.tick_t = game_state.tick_rate
+            game_state.tick_diff_t = game_state.game_t - game_state.tick_t
+            while game_state.tick_diff_t  >= game_state.tick_rate:
+                game_state.tick_diff_t -= game_state.tick_rate
+                game_state.tick_t += game_state.tick_rate
                 self.tick(game_state)
 
             self.update(game_state)

@@ -11,7 +11,7 @@ def change_entity_path(game: gs.GameState, entity: en.Entity, destination_tile: 
         entity.path = pf.find_path(game, current_tile, destination_tile, ignore_tiles) 
 
 
-def update_movement(game: gs.GameState):
+def tick_movement(game: gs.GameState):
     for entity in game.entities:
         if not entity.can_move:
             continue
@@ -29,8 +29,7 @@ def update_movement(game: gs.GameState):
         if entity.next_tile == -1:
             continue
         
-        progress_dist = game.delta_t / game.tick_rate / entity.speed
-        entity.next_tile_dist = max(0, entity.next_tile_dist - progress_dist)
+        entity.next_tile_dist = max(0, ((entity.next_tile_dist * entity.speed) - 1) / entity.speed )
 
         prev_xy = grid.index_to_coord(game, entity.prev_tile)
         next_xy = grid.index_to_coord(game, entity.next_tile) 
@@ -39,14 +38,30 @@ def update_movement(game: gs.GameState):
         entity.direction.x = x_diff if x_diff else entity.direction.x
         entity.direction.y = y_diff if y_diff else entity.direction.y
 
-        prev_global_xy = grid.index_to_global_coord(game, entity.prev_tile)
-        x = prev_global_xy[0] + ((1 - entity.next_tile_dist) * game.fake_grid_tile_size * x_diff)
-        y = prev_global_xy[1] + ((1 - entity.next_tile_dist) * game.fake_grid_tile_size * y_diff)
-
-        entity.sprite_rect.center = (x, y)
-
         if entity.next_tile_dist <= 0.5:
             entity.current_tile = entity.next_tile
 
         if entity.next_tile_dist == 0:
             entity.next_tile = -1
+
+def update_movement_view(game: gs.GameState):
+    for entity in game.entities:
+        if not entity.can_move:
+            continue
+
+        if entity.next_tile == -1:
+            entity.sprite_rect.center = grid.index_to_global_coord(game, entity.current_tile)
+            continue
+        
+        view_next_tile_dist = max(0, ((entity.next_tile_dist * entity.speed) - (game.tick_diff_t / game.tick_rate)) / entity.speed )
+
+        prev_xy = grid.index_to_coord(game, entity.prev_tile)
+        next_xy = grid.index_to_coord(game, entity.next_tile) 
+        x_diff = next_xy[0] - prev_xy[0]
+        y_diff = next_xy[1] - prev_xy[1]
+
+        prev_global_xy = grid.index_to_global_coord(game, entity.prev_tile)
+        x = prev_global_xy[0] + ((1 - view_next_tile_dist) * game.fake_grid_tile_size * x_diff)
+        y = prev_global_xy[1] + ((1 - view_next_tile_dist) * game.fake_grid_tile_size * y_diff)
+
+        entity.sprite_rect.center = (x, y)

@@ -18,7 +18,8 @@ class GameState:
     game_t: int = 0 #ms
     delta_t: int = 0 #ms
     tick_t: int = 0 #ms
-    tick_rate: int = 50
+    tick_diff_t: int = 0 #ms
+    tick_rate: int = 25
 
     # Fake grid
     fake_grid_border_thickness = 2
