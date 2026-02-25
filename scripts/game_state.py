@@ -33,6 +33,5 @@ class GameState:
     entities: list['Entity'] = []
     show_boxes: bool = False
     assets: dict[str, pygame.Surface] = {}
-    speed_const: int = 0.1
     boat_base_size: int = 48
 

@@ -16,7 +16,7 @@ class Entity:
     sprite_id: str|None = None
 
     # Movement
-    can_move = False
+    can_move: bool = False
     current_tile: int = -1
     prev_tile: int = -1
     next_tile: int = -1
@@ -26,13 +26,19 @@ class Entity:
     speed: int = 0 # in ticks/tile
 
     # Combat
-    can_fight = False
-    defeated = False
+    can_fight: bool = False
+    defeated: bool = False
     team: int = 0
     hp: int = 0
     max_hp: int = 0
     attack_speed: int = 0 # in ticks/attack
     last_shot_t: int = 0
+    can_capture: bool = False
+    can_be_captured: bool = False
+    capture_timer: int = 0
+    max_capture_timer: int = 0
+    capture_team: int = -1
+    capture_contested: bool = False
 
 def add_boat(game: gs.GameState) -> int:
     idx = game.entities.__len__()
@@ -59,6 +65,7 @@ def add_boat(game: gs.GameState) -> int:
     boat.max_hp =  10
     boat.attack_speed = 20
     boat.last_shot_t =  0
+    boat.can_capture = True
 
     game.entities.append(boat)
     return idx
@@ -76,6 +83,12 @@ def add_city(game: gs.GameState) -> int:
     city.team = 0
     city.attack_speed = 20
     city.last_shot_t = 0
+    city.can_be_captured = True
+    city.can_capture = False
+    city.capture_timer = 0
+    city.max_capture_timer = 160
+    city.capture_team = -1
+    city.capture_contested = False
 
     game.entities.append(city)
     return idx

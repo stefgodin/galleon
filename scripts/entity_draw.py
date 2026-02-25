@@ -59,16 +59,18 @@ def draw_boat(game_state: gs.GameState, render_target: pygame.Surface, boat: en.
                 ])
 
 
-def draw_city(game: gs.GameState, screen: pygame.Surface, city: en.Entity, layer: int):
+def draw_city(game: gs.GameState, render_target: pygame.Surface, city: en.Entity, layer: int):
     team_color = TEAM_COLORS[city.team % TEAM_COLORS.__len__()]
-    if layer == DRAW_LAYERS.ENTITY_UI:
+    [x, y] = grid.index_to_global_coord(game, city.current_tile)
+    if layer == DRAW_LAYERS.ENTITY:
+        pygame.draw.rect(surface= render_target, color= team_color, rect= [x - game.fake_grid_tile_size/2, y - game.fake_grid_tile_size/2, game.fake_grid_tile_size, game.fake_grid_tile_size])
+    elif layer == DRAW_LAYERS.ENTITY_UI:
         # Health bar
-        [x, y] = grid.index_to_global_coord(game, city.current_tile)
         y -= game.fake_grid_tile_size/2
         health_bar_width = 10 * city.max_hp
-        pygame.draw.rect(surface= screen, color= team_color, rect= [x - (health_bar_width/2) - 2, y - 16, health_bar_width + 4, 14])
-        pygame.draw.rect(surface= screen, color= 'black', rect= [x - (health_bar_width/2), y - 14, health_bar_width, 10])
-        pygame.draw.rect(surface= screen, color= 'red', rect= [x - (health_bar_width/2), y - 14, 10 * city.hp, 10])
+        pygame.draw.rect(surface= render_target, color= team_color, rect= [x - (health_bar_width/2) - 2, y - 16, health_bar_width + 4, 14])
+        pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (health_bar_width/2), y - 14, health_bar_width, 10])
+        pygame.draw.rect(surface= render_target, color= 'red', rect= [x - (health_bar_width/2), y - 14, 10 * city.hp, 10])
 
         # Boxes
         if game.show_boxes:
@@ -76,7 +78,7 @@ def draw_city(game: gs.GameState, screen: pygame.Surface, city: en.Entity, layer
             for tile in neihbors:
                 [x, y] = grid.index_to_global_coord(game, tile)
                 s = game.fake_grid_tile_size
-                pygame.draw.lines(screen, team_color, True, [
+                pygame.draw.lines(render_target, team_color, True, [
                     (x - s/2, y - s/2),
                     (x + s/2, y - s/2),
                     (x + s/2, y + s/2),
