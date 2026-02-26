@@ -30,6 +30,8 @@ def tick_combat(game_state: gs.GameState):
                 atk_target.defeated = True
                 if atk_target.can_be_captured:
                     atk_target.capture_timer = 0
+                else:
+                    atk_target.intangible = True
            
             entity.last_shot_t = game_state.game_t
 
@@ -52,6 +54,7 @@ def tick_capture(game_state: gs.GameState):
             continue
         
         if entity.capture_timer > 0 and (entity.capture_team == -1 or entity.capture_team != capturing_team):
+            # Count down the other team's timer
             entity.capture_timer = max(0, entity.capture_timer - 1)
         elif capturing_team != -1:
             entity.capture_team = capturing_team
@@ -62,3 +65,16 @@ def tick_capture(game_state: gs.GameState):
             entity.team = entity.capture_team
             entity.hp = entity.max_hp
             entity.defeated = False
+
+def tick_respawn(game_state: gs.GameState):
+    for entity in game_state.entities:
+        if entity.can_be_captured or not entity.defeated:
+            continue
+
+        entity.respawn_timer = min(entity.respawn_timer + 1, entity.max_respawn_timer)
+        if entity.respawn_timer == entity.max_respawn_timer:
+            entity.respawn_timer = 0
+            entity.hp = entity.max_hp
+            entity.defeated = False
+            entity.intangible = False
+            # TODO: Set current_tile to location of respawn point

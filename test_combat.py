@@ -47,6 +47,7 @@ class CombatTest(GameRunner):
         en_move.tick_movement(game_state)
         en_combat.tick_combat(game_state)
         en_combat.tick_capture(game_state)
+        en_combat.tick_respawn(game_state)
     
     # Called once per frame for real-time updates (or interpolation)
     @staticmethod

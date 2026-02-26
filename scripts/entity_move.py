@@ -13,11 +13,21 @@ def change_entity_path(game: gs.GameState, entity: en.Entity, destination_tile: 
 
 def tick_movement(game: gs.GameState):
     for entity in game.entities:
-        if not entity.can_move:
+        if not entity.can_move or entity.defeated:
             continue
         
         if entity.next_tile == -1 and entity.path.__len__():
-            if not next((other_entity for other_entity in game.entities if entity.can_move and (other_entity.current_tile == entity.path[0] or other_entity.next_tile == entity.path[0])), False):
+            next_path_blocked = False
+            for other_entity in game.entities:
+                if other_entity.intangible:
+                    continue
+
+                if other_entity.current_tile != entity.path[0] and other_entity.next_tile != entity.path[0]:
+                    continue
+
+                next_path_blocked = True
+            
+            if not next_path_blocked:
                 entity.prev_tile = entity.current_tile
                 entity.next_tile = entity.path.pop(0)
                 entity.next_tile_dist = 1.0
@@ -46,7 +56,7 @@ def tick_movement(game: gs.GameState):
 
 def update_movement_view(game: gs.GameState):
     for entity in game.entities:
-        if not entity.can_move:
+        if not entity.can_move or entity.defeated:
             continue
 
         if entity.next_tile == -1:

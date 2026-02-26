@@ -17,6 +17,7 @@ class Entity:
 
     # Movement
     can_move: bool = False
+    intangible: bool = False
     current_tile: int = -1
     prev_tile: int = -1
     next_tile: int = -1
@@ -39,6 +40,8 @@ class Entity:
     max_capture_timer: int = 0
     capture_team: int = -1
     capture_contested: bool = False
+    respawn_timer: int = 0
+    max_respawn_timer: int = 0
 
 def add_boat(game: gs.GameState) -> int:
     idx = game.entities.__len__()
@@ -66,6 +69,8 @@ def add_boat(game: gs.GameState) -> int:
     boat.attack_speed = 20
     boat.last_shot_t =  0
     boat.can_capture = True
+    boat.respawn_timer = 0
+    boat.max_respawn_timer = 160
 
     game.entities.append(boat)
     return idx
