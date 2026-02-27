@@ -25,7 +25,7 @@ def tick_combat(game_state: gs.GameState):
         
         if atk_target_list.__len__():
             atk_target = atk_target_list[random.randint(0, atk_target_list.__len__() - 1)]
-            atk_target.hp = max(atk_target.hp - 1, 0)
+            atk_target.hp = max(atk_target.hp - 1, atk_target.min_hp)
             if atk_target.hp == 0:
                 atk_target.defeated = True
                 if atk_target.can_be_captured:
@@ -71,10 +71,33 @@ def tick_respawn(game_state: gs.GameState):
         if entity.can_be_captured or not entity.defeated:
             continue
 
+        blocked_tiles = []
+        for other_entity in game_state.entities:
+            if not other_entity.intangible:
+                blocked_tiles.append(other_entity.current_tile)
+
+        respawn_tiles = []
+        for other_entity in game_state.entities:
+            if not other_entity.is_respawn_point or other_entity.team != entity.team:
+                continue
+
+            neighbors = grid.neighbor_tiles(game_state, other_entity.current_tile)
+            for neighbor in neighbors:
+                if grid.is_path_tile(game_state, neighbor) and neighbor not in blocked_tiles:
+                    respawn_tiles.append(neighbor)
+
+
         entity.respawn_timer = min(entity.respawn_timer + 1, entity.max_respawn_timer)
-        if entity.respawn_timer == entity.max_respawn_timer:
+        if entity.respawn_timer == entity.max_respawn_timer and respawn_tiles.__len__():
+            respawn_tiles.sort(key=lambda tile: grid.calc_dist(game_state, entity.current_tile, tile))
+
             entity.respawn_timer = 0
             entity.hp = entity.max_hp
             entity.defeated = False
             entity.intangible = False
-            # TODO: Set current_tile to location of respawn point
+            if entity.can_move:
+                entity.current_tile = respawn_tiles[0]
+                entity.path = []
+                entity.prev_tile = -1
+                entity.next_tile = -1
+                entity.next_tile_dist = 0

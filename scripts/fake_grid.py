@@ -5,11 +5,7 @@ import random
 class GridTiles:
     VOID = 0
     SEA = 1
-    ISLAND = 2
-    CITY = 3
-    COVE = 4
-    LAND = 5
-    CHOSEN = 6
+    LAND = 2
 
 def setup_grid(game: gs.GameState):
     for _ in range(0, game.fake_grid_x * game.fake_grid_y):
@@ -56,6 +52,7 @@ def index_to_global_coord(game: gs.GameState, idx: int) -> tuple[int, int]|None:
     
     return grid_to_global_coord(game, coord[0], coord[1])
 
+# Manhattan distance
 def calc_dist(game: gs.GameState, from_tile: int, to_tile: int) -> int:
     xy_from = index_to_coord(game, from_tile)
     if xy_from is None:
@@ -90,7 +87,6 @@ def draw_grid(game: gs.GameState, surface: pygame.Surface):
         GridTiles.VOID: "black",
         GridTiles.SEA: pygame.Color(60, 160, 240),
         GridTiles.LAND: pygame.Color(240, 240, 30),
-        GridTiles.CITY: pygame.Color(100, 100, 100)
     }
     for y in range(0, game.fake_grid_y):
         for x in range(0, game.fake_grid_x):

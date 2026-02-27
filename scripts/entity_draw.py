@@ -26,6 +26,8 @@ def draw_entities(game_state: gs.GameState, render_target: pygame.Surface):
                     draw_boat(game_state, render_target, entity, layer)
                 case en.EntityType.CITY:
                     draw_city(game_state, render_target, entity, layer)
+                case en.EntityType.COVE:
+                    draw_cove(game_state, render_target, entity, layer)
 
 
 def draw_boat(game_state: gs.GameState, render_target: pygame.Surface, boat: en.Entity, layer: int):
@@ -93,3 +95,10 @@ def draw_city(game: gs.GameState, render_target: pygame.Surface, city: en.Entity
                     (x + s/2, y + s/2),
                     (x - s/2, y + s/2),
                 ])
+
+def draw_cove(game: gs.GameState, render_target: pygame.Surface, city: en.Entity, layer: int):
+    team_color = TEAM_COLORS[city.team % TEAM_COLORS.__len__()]
+    [x, y] = grid.index_to_global_coord(game, city.current_tile)
+    if layer == DRAW_LAYERS.ENTITY:
+        pygame.draw.rect(surface= render_target, color= 'black', rect= [x - game.fake_grid_tile_size/2, y - game.fake_grid_tile_size/2, game.fake_grid_tile_size, game.fake_grid_tile_size])
+        pygame.draw.rect(surface= render_target, color= team_color, rect= [x - game.fake_grid_tile_size/2 + 3, y - game.fake_grid_tile_size/2 + 3, game.fake_grid_tile_size - 6, game.fake_grid_tile_size - 6])

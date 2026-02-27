@@ -7,6 +7,7 @@ class EntityType:
     UNDEFINED = -1
     BOAT = 0
     CITY = 1
+    COVE = 2
 
 class Entity:
     type: int = EntityType.UNDEFINED
@@ -32,6 +33,7 @@ class Entity:
     team: int = 0
     hp: int = 0
     max_hp: int = 0
+    min_hp: int = 0
     attack_speed: int = 0 # in ticks/attack
     last_shot_t: int = 0
     can_capture: bool = False
@@ -40,6 +42,8 @@ class Entity:
     max_capture_timer: int = 0
     capture_team: int = -1
     capture_contested: bool = False
+
+    is_respawn_point: bool = False
     respawn_timer: int = 0
     max_respawn_timer: int = 0
 
@@ -96,4 +100,23 @@ def add_city(game: gs.GameState) -> int:
     city.capture_contested = False
 
     game.entities.append(city)
+    return idx
+
+def add_cove(game: gs.GameState):
+    idx = game.entities.__len__()
+    cove = en.Entity()
+    cove.type = en.EntityType.COVE
+    cove.current_tile = -1
+
+    cove.can_fight = True
+    cove.defeated = False
+    cove.hp = 1
+    cove.max_hp = 1
+    cove.min_hp = 1
+    cove.team = 0
+    cove.attack_speed = 10
+    cove.last_shot_t = 0
+    cove.is_respawn_point = True
+
+    game.entities.append(cove)
     return idx

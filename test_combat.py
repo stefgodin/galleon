@@ -16,18 +16,25 @@ class CombatTest(GameRunner):
     def init(game_state: gs.GameState):
         ast.load_assets(game_state)
         grid.setup_grid(game_state)
-        for idx in range(0, 2):
-            i = en.add_boat(game_state)
-            boat = game_state.entities[i]
-            boat.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
-            boat.sprite_rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
-            boat.team = 1 if idx == 0 else 2
+        for team in range(0, 4):
+            i = en.add_cove(game_state)
+            cove = game_state.entities[i]
+            cove.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
+            game_state.fake_grid_tiles[cove.current_tile] = grid.GridTiles.LAND
+            cove.team = team
+
+            for _ in range(0, 2):
+                i = en.add_boat(game_state)
+                boat = game_state.entities[i]
+                boat.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
+                boat.sprite_rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
+                boat.team = team
         
         for _ in range(0, 5):
             i = en.add_city(game_state)
             city = game_state.entities[i]
             city.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
-            game_state.fake_grid_tiles[city.current_tile] = grid.GridTiles.CITY
+            game_state.fake_grid_tiles[city.current_tile] = grid.GridTiles.LAND
 
     # Called on every input event
     @staticmethod
