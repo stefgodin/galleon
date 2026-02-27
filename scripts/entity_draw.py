@@ -65,12 +65,21 @@ def draw_city(game: gs.GameState, render_target: pygame.Surface, city: en.Entity
     if layer == DRAW_LAYERS.ENTITY:
         pygame.draw.rect(surface= render_target, color= team_color, rect= [x - game.fake_grid_tile_size/2, y - game.fake_grid_tile_size/2, game.fake_grid_tile_size, game.fake_grid_tile_size])
     elif layer == DRAW_LAYERS.ENTITY_UI:
-        # Health bar
-        y -= game.fake_grid_tile_size/2
-        health_bar_width = 10 * city.max_hp
-        pygame.draw.rect(surface= render_target, color= team_color, rect= [x - (health_bar_width/2) - 2, y - 16, health_bar_width + 4, 14])
-        pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (health_bar_width/2), y - 14, health_bar_width, 10])
-        pygame.draw.rect(surface= render_target, color= 'red', rect= [x - (health_bar_width/2), y - 14, 10 * city.hp, 10])
+        if not city.defeated:
+            # Health bar
+            y -= game.fake_grid_tile_size/2
+            health_bar_width = 10 * city.max_hp
+            pygame.draw.rect(surface= render_target, color= team_color, rect= [x - (health_bar_width/2) - 2, y - 16, health_bar_width + 4, 14])
+            pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (health_bar_width/2), y - 14, health_bar_width, 10])
+            pygame.draw.rect(surface= render_target, color= 'red', rect= [x - (health_bar_width/2), y - 14, city.hp/city.max_hp * health_bar_width, 10])
+        else:
+            # Capture progress
+            capture_team_color = TEAM_COLORS[city.capture_team if city.capture_team != -1 else 0]
+            y -= game.fake_grid_tile_size/2
+            timer_bar_width = 10 * city.max_hp 
+            pygame.draw.rect(surface= render_target, color= team_color, rect= [x - (timer_bar_width/2) - 2, y - 16, timer_bar_width + 4, 14])
+            pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (timer_bar_width/2), y - 14, timer_bar_width, 10])
+            pygame.draw.rect(surface= render_target, color= capture_team_color, rect= [x - (timer_bar_width/2), y - 14, city.capture_timer/city.max_capture_timer*timer_bar_width, 10])
 
         # Boxes
         if game.show_boxes:
