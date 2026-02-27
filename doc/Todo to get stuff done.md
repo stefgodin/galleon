@@ -9,12 +9,12 @@
 			- http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf
 			- https://www.youtube.com/watch?v=q77-uxsDZow
 	- [ ] Path find on hex grid
-- [ ] Make a combat system (enemy + canons + hp) ~ Steg
+- [x] Make a combat system (enemy + canons + hp) ~ Steg ✅ 2026-02-26
     - [x] City entities ✅ 2026-02-18
 	- [x] Teams to assign boats and cities to ✅ 2026-02-18
 	- [x] Cities and boats attack each other ✅ 2026-02-18
 	- [x] City capture system (fighting and capturing cities) ✅ 2026-02-25
-	- [ ] Boat destruction and respawn
+	- [x] Boat destruction and respawn ✅ 2026-02-26
 - [ ] Win conditions and game modes
 	- [ ] Have the most cities captured after time or capture all cities for x seconds
 - [ ] Resource system (counter + stealing + city resource + island resource)
