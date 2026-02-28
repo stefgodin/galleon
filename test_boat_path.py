@@ -3,11 +3,11 @@ import random
 from scripts.game_runner import GameRunner
 import scripts.fake_grid as grid
 import scripts.game_state as gs
-import scripts.find_path as pf
 import scripts.assets as ast
 import scripts.entity_move as en_move
 import scripts.entity_draw as en_draw
 import scripts.entity as en
+import scripts.team as t
 
 class BoatDrawTest(GameRunner):
     # Called once at the start of the game
@@ -15,6 +15,7 @@ class BoatDrawTest(GameRunner):
     def init(game_state: gs.GameState):
         ast.load_assets(game_state)
         grid.setup_grid(game_state)
+        t.setup_teams(game_state, 0)
         for _ in range(0, 10):
             i = en.add_boat(game_state)
             boat = game_state.entities[i]

@@ -18,23 +18,23 @@ TEAM_COLORS = [
     "#673AB7",
 ]
 
-def draw_entities(game_state: gs.GameState, render_target: pygame.Surface):
+def draw_entities(game: gs.GameState, render_target: pygame.Surface):
     for layer in range(DRAW_LAYERS.ENTITY, DRAW_LAYERS.ENTITY_UI + 1):
-        for entity in game_state.entities:
+        for entity in game.entities:
             match entity.type:
                 case en.EntityType.BOAT:
-                    draw_boat(game_state, render_target, entity, layer)
+                    draw_boat(game, render_target, entity, layer)
                 case en.EntityType.CITY:
-                    draw_city(game_state, render_target, entity, layer)
+                    draw_city(game, render_target, entity, layer)
                 case en.EntityType.COVE:
-                    draw_cove(game_state, render_target, entity, layer)
+                    draw_cove(game, render_target, entity, layer)
 
 
-def draw_boat(game_state: gs.GameState, render_target: pygame.Surface, boat: en.Entity, layer: int):
-    team_color = TEAM_COLORS[boat.team % TEAM_COLORS.__len__()]
+def draw_boat(game: gs.GameState, render_target: pygame.Surface, boat: en.Entity, layer: int):
+    team_color = game.teams[boat.team].color
     if layer == DRAW_LAYERS.ENTITY:
-        boat_img = game_state.assets[boat.sprite_id]
-        boat_img = pygame.transform.scale(boat_img, (game_state.boat_base_size, game_state.boat_base_size))
+        boat_img = game.assets[boat.sprite_id]
+        boat_img = pygame.transform.scale(boat_img, (game.boat_base_size, game.boat_base_size))
         if boat.direction.x == 1:
             boat_img = pygame.transform.flip(boat_img, True, False)
 
@@ -48,11 +48,11 @@ def draw_boat(game_state: gs.GameState, render_target: pygame.Surface, boat: en.
         pygame.draw.rect(surface= render_target, color= 'red', rect= [x - (health_bar_width/2), y - 10, 10 * boat.hp, 10])
 
         # Boxes
-        if game_state.show_boxes:
-            neihbors = grid.neighbor_tiles(game_state, boat.current_tile)
+        if game.show_boxes:
+            neihbors = grid.neighbor_tiles(game, boat.current_tile)
             for tile in neihbors:
-                [x, y] = grid.index_to_global_coord(game_state, tile)
-                s = game_state.fake_grid_tile_size
+                [x, y] = grid.index_to_global_coord(game, tile)
+                s = game.fake_grid_tile_size
                 pygame.draw.lines(render_target, team_color, True, [
                     (x - s/2, y - s/2),
                     (x + s/2, y - s/2),
@@ -62,26 +62,32 @@ def draw_boat(game_state: gs.GameState, render_target: pygame.Surface, boat: en.
 
 
 def draw_city(game: gs.GameState, render_target: pygame.Surface, city: en.Entity, layer: int):
-    team_color = TEAM_COLORS[city.team % TEAM_COLORS.__len__()]
+    team_color = game.teams[city.team].color
     [x, y] = grid.index_to_global_coord(game, city.current_tile)
     if layer == DRAW_LAYERS.ENTITY:
         pygame.draw.rect(surface= render_target, color= team_color, rect= [x - game.fake_grid_tile_size/2, y - game.fake_grid_tile_size/2, game.fake_grid_tile_size, game.fake_grid_tile_size])
     elif layer == DRAW_LAYERS.ENTITY_UI:
         if not city.defeated:
             # Health bar
-            y -= game.fake_grid_tile_size/2
-            health_bar_width = 10 * city.max_hp
-            pygame.draw.rect(surface= render_target, color= team_color, rect= [x - (health_bar_width/2) - 2, y - 16, health_bar_width + 4, 14])
-            pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (health_bar_width/2), y - 14, health_bar_width, 10])
-            pygame.draw.rect(surface= render_target, color= 'red', rect= [x - (health_bar_width/2), y - 14, city.hp/city.max_hp * health_bar_width, 10])
+            hp_bar_y = y - game.fake_grid_tile_size/2
+            health_bar_w = 10 * city.max_hp
+            pygame.draw.rect(surface= render_target, color= team_color, rect= [x - (health_bar_w/2) - 2, hp_bar_y - 16, health_bar_w + 4, 14])
+            pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (health_bar_w/2), hp_bar_y - 14, health_bar_w, 10])
+            pygame.draw.rect(surface= render_target, color= 'red', rect= [x - (health_bar_w/2), hp_bar_y - 14, city.hp/city.max_hp * health_bar_w, 10])
         else:
             # Capture progress
-            capture_team_color = TEAM_COLORS[city.capture_team if city.capture_team != -1 else 0]
+            capture_team_color = game.teams[city.capture_team].color if city.capture_team != -1 and not city.capture_contested else game.teams[0].color
+            capture_bar_y = y - game.fake_grid_tile_size/2
+            capture_timer_w = 10 * city.max_hp 
+            pygame.draw.rect(surface= render_target, color= team_color, rect= [x - (capture_timer_w/2) - 2, capture_bar_y - 16, capture_timer_w + 4, 14])
+            pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (capture_timer_w/2), capture_bar_y - 14, capture_timer_w, 10])
+            pygame.draw.rect(surface= render_target, color= capture_team_color, rect= [x - (capture_timer_w/2), capture_bar_y - 14, city.capture_timer/city.max_capture_timer*capture_timer_w, 10])
+        
+        # Resource yield
+        if city.resource_a != -1 and game.teams[city.team].can_win:
             y -= game.fake_grid_tile_size/2
-            timer_bar_width = 10 * city.max_hp 
-            pygame.draw.rect(surface= render_target, color= team_color, rect= [x - (timer_bar_width/2) - 2, y - 16, timer_bar_width + 4, 14])
-            pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (timer_bar_width/2), y - 14, timer_bar_width, 10])
-            pygame.draw.rect(surface= render_target, color= capture_team_color, rect= [x - (timer_bar_width/2), y - 14, city.capture_timer/city.max_capture_timer*timer_bar_width, 10])
+            resource_timer_w = 10 * city.max_hp
+            pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (resource_timer_w/2), y, city.resource_yield_timer/city.max_resource_yield_timer * resource_timer_w, 4])
 
         # Boxes
         if game.show_boxes:
@@ -96,9 +102,9 @@ def draw_city(game: gs.GameState, render_target: pygame.Surface, city: en.Entity
                     (x - s/2, y + s/2),
                 ])
 
-def draw_cove(game: gs.GameState, render_target: pygame.Surface, city: en.Entity, layer: int):
-    team_color = TEAM_COLORS[city.team % TEAM_COLORS.__len__()]
-    [x, y] = grid.index_to_global_coord(game, city.current_tile)
+def draw_cove(game: gs.GameState, render_target: pygame.Surface, cove: en.Entity, layer: int):
+    team_color = game.teams[cove.team].color
+    [x, y] = grid.index_to_global_coord(game, cove.current_tile)
     if layer == DRAW_LAYERS.ENTITY:
         pygame.draw.rect(surface= render_target, color= 'black', rect= [x - game.fake_grid_tile_size/2, y - game.fake_grid_tile_size/2, game.fake_grid_tile_size, game.fake_grid_tile_size])
         pygame.draw.rect(surface= render_target, color= team_color, rect= [x - game.fake_grid_tile_size/2 + 3, y - game.fake_grid_tile_size/2 + 3, game.fake_grid_tile_size - 6, game.fake_grid_tile_size - 6])

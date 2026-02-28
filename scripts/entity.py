@@ -1,16 +1,15 @@
 import pygame
 import scripts.game_state as gs
-import scripts.entity as en
 import scripts.assets as ast
 
 class EntityType:
-    UNDEFINED = -1
     BOAT = 0
     CITY = 1
     COVE = 2
 
 class Entity:
-    type: int = EntityType.UNDEFINED
+    id: int = -1
+    type: int = -1
 
     # Render
     sprite_rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)
@@ -28,7 +27,8 @@ class Entity:
     speed: int = 0 # in ticks/tile
 
     # Combat
-    can_fight: bool = False
+    can_attack: bool = False
+    can_be_attacked: bool = False
     defeated: bool = False
     team: int = 0
     hp: int = 0
@@ -49,11 +49,22 @@ class Entity:
 
     is_win_condition: bool = False
 
+    # Resource
+    can_yield_resources: bool = False
+    resource_a: int = -1
+    resource_b: int = -1
+    gold_yield: int = 0
+    rhum_yield: int = 0
+    wood_yield: int = 0
+    resource_yield_timer: int = 0
+    max_resource_yield_timer: int = 0
+
 def add_boat(game: gs.GameState) -> int:
     idx = game.entities.__len__()
     boat_rect = pygame.Rect(0, 0, game.boat_base_size, game.boat_base_size)
-    boat = en.Entity()
-    boat.type = en.EntityType.BOAT
+    boat = Entity()
+    boat.id = idx
+    boat.type = EntityType.BOAT
 
     boat.sprite_rect = boat_rect
     boat.sprite_id = ast.Assets.BOAT_BASE
@@ -67,7 +78,8 @@ def add_boat(game: gs.GameState) -> int:
     boat.direction = pygame.Vector2(0, 0)
     boat.speed = 20
 
-    boat.can_fight = True
+    boat.can_attack = True
+    boat.can_be_attacked = True
     boat.defeated = False
     boat.team =  0
     boat.hp =  10
@@ -83,11 +95,13 @@ def add_boat(game: gs.GameState) -> int:
 
 def add_city(game: gs.GameState) -> int:
     idx = game.entities.__len__()
-    city = en.Entity()
-    city.type = en.EntityType.CITY
+    city = Entity()
+    city.id = idx
+    city.type = EntityType.CITY
     city.current_tile = -1
 
-    city.can_fight = True
+    city.can_attack = True
+    city.can_be_attacked = True
     city.defeated = False
     city.hp = 8
     city.max_hp = 8
@@ -103,16 +117,22 @@ def add_city(game: gs.GameState) -> int:
 
     city.is_win_condition = True
 
+    city.can_yield_resources = True
+    city.resource_yield_timer = 0
+    city.max_resource_yield_timer = 400
+
     game.entities.append(city)
     return idx
 
 def add_cove(game: gs.GameState):
     idx = game.entities.__len__()
-    cove = en.Entity()
-    cove.type = en.EntityType.COVE
+    cove = Entity()
+    cove.id = idx
+    cove.type = EntityType.COVE
     cove.current_tile = -1
 
-    cove.can_fight = True
+    cove.can_attack = True
+    cove.can_be_attacked = False
     cove.defeated = False
     cove.hp = 1
     cove.max_hp = 1

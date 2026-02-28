@@ -26,6 +26,7 @@
     - [ ] HUD
 	- [ ] In game menu
 	- [ ] Main menu
+- [ ] Balance the game (default stats, upgrades, speed, etc)
 
 
 

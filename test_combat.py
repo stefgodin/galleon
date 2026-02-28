@@ -8,6 +8,7 @@ import scripts.entity_move as en_move
 import scripts.entity_combat as en_combat
 import scripts.entity_draw as en_draw
 import scripts.entity as en
+import scripts.team as t
 from scripts.game_runner import GameRunner
 
 class CombatTest(GameRunner):
@@ -16,19 +17,23 @@ class CombatTest(GameRunner):
     def init(game_state: gs.GameState):
         ast.load_assets(game_state)
         grid.setup_grid(game_state)
-        for team in range(0, 4):
+        t.setup_teams(game_state, 4)
+        for team in game_state.teams:
+            if not team.can_win:
+                continue
+
             i = en.add_cove(game_state)
             cove = game_state.entities[i]
             cove.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
             game_state.fake_grid_tiles[cove.current_tile] = grid.GridTiles.LAND
-            cove.team = team
+            cove.team = team.id
 
             for _ in range(0, 2):
                 i = en.add_boat(game_state)
                 boat = game_state.entities[i]
                 boat.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
                 boat.sprite_rect.center = grid.index_to_global_coord(game_state, boat.current_tile)
-                boat.team = team
+                boat.team = team.id
         
         for _ in range(0, 5):
             i = en.add_city(game_state)

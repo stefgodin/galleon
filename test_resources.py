@@ -7,6 +7,7 @@ import scripts.assets as ast
 import scripts.entity_move as en_move
 import scripts.entity_combat as en_combat
 import scripts.entity_draw as en_draw
+import scripts.entity_resource as en_res
 import scripts.entity as en
 import scripts.win_condition as wc
 import scripts.team as t
@@ -17,11 +18,14 @@ class WinTest(GameRunner):
     def init(game_state: gs.GameState):
         ast.load_assets(game_state)
         grid.setup_grid(game_state)
-        t.setup_teams(game_state, 3)
         wc.setup_win_condition(game_state)
-        for team in game_state.teams:
-            if not team.can_win:
-                continue
+        
+        for _ in range(0, 4):
+            t_id = t.add_team(game_state)
+            team = game_state.teams[t_id]
+            if team.id == 0:
+                team.can_win = False
+                continue # Skip neutral team
 
             i = en.add_cove(game_state)
             cove = game_state.entities[i]
@@ -41,6 +45,9 @@ class WinTest(GameRunner):
             city = game_state.entities[i]
             city.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
             game_state.fake_grid_tiles[city.current_tile] = grid.GridTiles.LAND
+            # TODO: Spread even amount of resources amongs all cities
+            city.resource_a = en_res.Resources.GOLD
+            city.resource_b = en_res.Resources.RHUM
 
     # Called on every input event
     @staticmethod
@@ -71,6 +78,7 @@ class WinTest(GameRunner):
         en_combat.tick_combat(game_state)
         en_combat.tick_capture(game_state)
         en_combat.tick_respawn(game_state)
+        en_res.tick_yield(game_state)
         wc.tick_win_condition(game_state)
     
     # Called once per frame for real-time updates (or interpolation)

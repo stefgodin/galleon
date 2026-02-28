@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from scripts.entity import Entity
+    from scripts.team import Team
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,4 +41,7 @@ class GameState:
     show_boxes: bool = False
     assets: dict[str, pygame.Surface|pygame.font.Font] = {}
     boat_base_size: int = 48
+
+    # Players and team
+    teams: list['Team'] = []
 

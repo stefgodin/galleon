@@ -5,7 +5,7 @@ import scripts.entity as en
 
 def tick_combat(game_state: gs.GameState):
     for entity in game_state.entities:
-        if not entity.can_fight:
+        if not entity.can_attack:
             continue
         
         if entity.defeated or entity.last_shot_t + (entity.attack_speed * game_state.tick_rate) > game_state.game_t:
@@ -14,7 +14,7 @@ def tick_combat(game_state: gs.GameState):
         atk_target_list: list[en.Entity] = []
         atk_tiles = grid.neighbor_tiles(game_state, entity.current_tile)
         for other_entity in game_state.entities:
-            if not entity.can_fight:
+            if not other_entity.can_be_attacked:
                 continue
 
             if other_entity == entity or other_entity.defeated or other_entity.team == entity.team:
@@ -24,6 +24,8 @@ def tick_combat(game_state: gs.GameState):
                 atk_target_list.append(other_entity)
         
         if atk_target_list.__len__():
+            entity.last_shot_t = game_state.game_t
+
             atk_target = atk_target_list[random.randint(0, atk_target_list.__len__() - 1)]
             atk_target.hp = max(atk_target.hp - 1, atk_target.min_hp)
             if atk_target.hp == 0:
@@ -33,8 +35,11 @@ def tick_combat(game_state: gs.GameState):
                     atk_target.team = 0
                 else:
                     atk_target.intangible = True
+                    entity.respawn_timer = 0
+                
+                if atk_target.can_yield_resources:
+                    atk_target.resource_yield_timer = 0
            
-            entity.last_shot_t = game_state.game_t
 
 def tick_capture(game_state: gs.GameState):
     for entity in game_state.entities:
