@@ -47,6 +47,8 @@ class Entity:
     respawn_timer: int = 0
     max_respawn_timer: int = 0
 
+    is_win_condition: bool = False
+
 def add_boat(game: gs.GameState) -> int:
     idx = game.entities.__len__()
     boat_rect = pygame.Rect(0, 0, game.boat_base_size, game.boat_base_size)
@@ -98,6 +100,8 @@ def add_city(game: gs.GameState) -> int:
     city.max_capture_timer = 160
     city.capture_team = -1
     city.capture_contested = False
+
+    city.is_win_condition = True
 
     game.entities.append(city)
     return idx

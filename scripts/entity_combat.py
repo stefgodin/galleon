@@ -30,6 +30,7 @@ def tick_combat(game_state: gs.GameState):
                 atk_target.defeated = True
                 if atk_target.can_be_captured:
                     atk_target.capture_timer = 0
+                    atk_target.team = 0
                 else:
                     atk_target.intangible = True
            

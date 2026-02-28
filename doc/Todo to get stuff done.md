@@ -15,8 +15,8 @@
 	- [x] Cities and boats attack each other ✅ 2026-02-18
 	- [x] City capture system (fighting and capturing cities) ✅ 2026-02-25
 	- [x] Boat destruction and respawn ✅ 2026-02-26
-- [ ] Win conditions and game modes
-	- [ ] Have the most cities captured after time or capture all cities for x seconds
+- [x] Win conditions ✅ 2026-02-27
+	- [x] Have the most cities captured after time ✅ 2026-02-27
 - [ ] Resource system (counter + stealing + city resource + island resource)
 	- [ ] Upgrades for boats
 	- [ ] Upgrades for cities

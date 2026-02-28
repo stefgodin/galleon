@@ -22,16 +22,22 @@ class GameState:
     tick_rate: int = 25
 
     # Fake grid
-    fake_grid_border_thickness = 2
-    fake_grid_x = 20
-    fake_grid_y = 10
-    fake_grid_tile_size = 64
+    fake_grid_x: int = 20
+    fake_grid_y: int = 10
+    fake_grid_tile_size: int = 64 # Todo move to grid
     fake_grid_tiles: list[int] = []
     fake_grid_hovered_tile: int = -1
+
+    # Win condition
+    max_game_timer: int = 0
+    game_timer: int = 0
+    real_time_max_game_timer: int = 0 # in s
+    winner_team: int = -1
+    game_over: bool = False
 
     # Entities
     entities: list['Entity'] = []
     show_boxes: bool = False
-    assets: dict[str, pygame.Surface] = {}
+    assets: dict[str, pygame.Surface|pygame.font.Font] = {}
     boat_base_size: int = 48
 
