@@ -20,7 +20,7 @@
 - [ ] Resource system (counter + stealing + city resource + island resource)
 	- [x] Resource timer ✅ 2026-03-01
 	- [x] Team info board ✅ 2026-03-01
-	- [ ] Spread resource evenly between cities
+	- [x] Spread resource evenly between cities ✅ 2026-03-01
 	- [ ] Upgrades for boats
 	- [ ] Upgrades for cities
 - [ ] Camera panning
