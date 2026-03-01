@@ -60,6 +60,7 @@ class WinTest(GameRunner):
         elif evt.type == pygame.KEYDOWN or evt.type == pygame.KEYUP:
             keys = pygame.key.get_pressed()
             game_state.key_1 = keys[pygame.K_1]
+            game_state.key_tab = keys[pygame.K_TAB]
             if keys[pygame.K_KP_PLUS]:
                 game_state.tick_rate = max(1, game_state.tick_rate - 1)
             elif keys[pygame.K_KP_MINUS]:
@@ -121,5 +122,7 @@ class WinTest(GameRunner):
         wc.draw_game_timer(game_state, render_target)
         if game_state.game_over:
             wc.draw_game_over(game_state, render_target)
+        elif game_state.key_tab:
+            t.draw_team_info(game_state, render_target)
 
 WinTest().run()

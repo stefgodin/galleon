@@ -15,6 +15,7 @@ class GameState:
     mouse_pos: tuple[int, int]|None = None
     mouse_left: bool = False
     key_1: bool = False
+    key_tab: bool = False
 
     game_t: int = 0 #ms
     delta_t: int = 0 #ms
