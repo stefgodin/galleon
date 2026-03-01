@@ -18,6 +18,9 @@
 - [x] Win conditions ✅ 2026-02-27
 	- [x] Have the most cities captured after time ✅ 2026-02-27
 - [ ] Resource system (counter + stealing + city resource + island resource)
+	- [x] Resource timer ✅ 2026-03-01
+	- [x] Team info board ✅ 2026-03-01
+	- [ ] Spread resource evenly between cities
 	- [ ] Upgrades for boats
 	- [ ] Upgrades for cities
 - [ ] Camera panning
