@@ -2,6 +2,7 @@ import pygame
 import scripts.fake_grid as grid
 import scripts.game_state as gs
 import scripts.entity as en
+import scripts.entity_resource as en_res
 
 class DRAW_LAYERS:
     ENTITY = 0
@@ -50,6 +51,12 @@ def draw_boat(game: gs.GameState, render_target: pygame.Surface, boat: en.Entity
                 ])
 
 
+RESOURCE_COLORS = {
+    en_res.Resources.GOLD: "#E3B637",
+    en_res.Resources.RHUM: "#B21E11",
+    en_res.Resources.WOOD: "#2F6F40",
+}
+
 def draw_city(game: gs.GameState, render_target: pygame.Surface, city: en.Entity, layer: int):
     team_color = game.teams[city.team].color
     [x, y] = grid.index_to_global_coord(game, city.current_tile)
@@ -73,10 +80,14 @@ def draw_city(game: gs.GameState, render_target: pygame.Surface, city: en.Entity
             pygame.draw.rect(surface= render_target, color= capture_team_color, rect= [x - (capture_timer_w/2), capture_bar_y - 14, city.capture_timer/city.max_capture_timer*capture_timer_w, 10])
         
         # Resource yield
-        if city.resource_a != -1 and game.teams[city.team].can_win:
-            y -= game.fake_grid_tile_size/2
-            resource_timer_w = 10 * city.max_hp
-            pygame.draw.rect(surface= render_target, color= 'black', rect= [x - (resource_timer_w/2), y, city.resource_yield_timer/city.max_resource_yield_timer * resource_timer_w, 4])
+        resource_timer_w = 10 * city.max_hp
+        resource_timer_y = y - game.fake_grid_tile_size/2
+
+        if city.resource_a != -1:
+            pygame.draw.rect(surface= render_target, color= RESOURCE_COLORS[city.resource_a], rect= [x - (resource_timer_w/2), resource_timer_y, city.resource_yield_timer/city.max_resource_yield_timer * resource_timer_w, 4])
+
+        if city.resource_b != -1:
+            pygame.draw.rect(surface= render_target, color= RESOURCE_COLORS[city.resource_b], rect= [x - (resource_timer_w/2), resource_timer_y + 4, city.resource_yield_timer/city.max_resource_yield_timer * resource_timer_w, 4])
 
         # Boxes
         if game.show_boxes:

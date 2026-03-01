@@ -45,9 +45,8 @@ class WinTest(GameRunner):
             city = game_state.entities[i]
             city.current_tile = random.randint(0, game_state.fake_grid_tiles.__len__() - 1)
             game_state.fake_grid_tiles[city.current_tile] = grid.GridTiles.LAND
-            # TODO: Spread even amount of resources amongs all cities
-            city.resource_a = en_res.Resources.GOLD
-            city.resource_b = en_res.Resources.RHUM
+        
+        en_res.spread_resource_yield(game_state)
 
     # Called on every input event
     @staticmethod
