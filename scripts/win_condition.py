@@ -1,7 +1,6 @@
 import pygame
 import scripts.game_state as gs
 import scripts.assets as ast
-import scripts.entity_draw as en_draw
 
 def setup_win_condition(game_state: gs.GameState):
     game_state.max_game_timer = 12000
@@ -51,7 +50,7 @@ def draw_game_over(game: gs.GameState, render_target: pygame.Surface):
     [w, h] = render_target.get_size()
 
     pygame.draw.rect(render_target, 'black', (0.08 * w, 0.08 * h, 0.84 * w, 0.84 * h))
-    winner_color = en_draw.TEAM_COLORS[game.winner_team] if game.winner_team != -1 else 'white'
+    winner_color = game.teams[game.winner_team].color if game.winner_team != -1 else 'white'
     pygame.draw.rect(render_target, winner_color, (0.1 * w, 0.1 * h, 0.8 * w, 0.8 * h))
 
     text_font = game.assets[ast.Assets.MAIN_FONT]

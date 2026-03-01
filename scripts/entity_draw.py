@@ -7,17 +7,6 @@ class DRAW_LAYERS:
     ENTITY = 0
     ENTITY_UI = 1
 
-TEAM_COLORS = [
-    "#607D8B",
-    "#4CAF50",
-    "#F44336",
-    "#2196F3",
-    "#FFEB3B",
-    "#FF9800",
-    "#00BCD4",
-    "#673AB7",
-]
-
 def draw_entities(game: gs.GameState, render_target: pygame.Surface):
     for layer in range(DRAW_LAYERS.ENTITY, DRAW_LAYERS.ENTITY_UI + 1):
         for entity in game.entities:

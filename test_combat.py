@@ -2,7 +2,6 @@ import pygame
 import random
 import scripts.fake_grid as grid
 import scripts.game_state as gs
-import scripts.find_path as pf
 import scripts.assets as ast
 import scripts.entity_move as en_move
 import scripts.entity_combat as en_combat
