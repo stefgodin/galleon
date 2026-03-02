@@ -19,6 +19,8 @@ class WinTest(GameRunner):
         grid.setup_grid(game_state)
         t.setup_teams(game_state, 3)
         wc.setup_win_condition(game_state)
+        game_state.player_team = next((t for t in game_state.teams if t.can_win)).id
+
         for team in game_state.teams:
             if not team.can_win:
                 continue
@@ -82,7 +84,7 @@ class WinTest(GameRunner):
         game_state.show_boxes = game_state.key_1
 
         for entity in game_state.entities:
-            if not entity.can_move or entity.team == 1 or entity.path.__len__():
+            if not entity.can_move or entity.team == game_state.player_team or entity.path.__len__():
                continue 
             
             # Automatically controlling entities movements that are not in team 1
@@ -94,7 +96,7 @@ class WinTest(GameRunner):
             if game_state.mouse_left:
                 final_tile = grid.global_coord_to_index(game_state, game_state.mouse_pos[0], game_state.mouse_pos[1])
                 for entity in game_state.entities: 
-                    if entity.can_move and entity.team == 1:
+                    if entity.can_move and entity.team == game_state.player_team:
                         en_move.change_entity_path(game_state, entity, final_tile)
 
             grid_coord = grid.global_to_grid_coord(game_state, game_state.mouse_pos[0], game_state.mouse_pos[1])

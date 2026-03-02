@@ -42,19 +42,19 @@ def draw_game_timer(game: gs.GameState, render_target: pygame.Surface):
     time = mins+":"+secs
 
     timer_font = game.assets[ast.Assets.MAIN_FONT]
-    timer_text = timer_font.render(time, True, 'black')
+    timer_text = timer_font.render(time, True, "black")
     [tw, th] = timer_text.get_size()
     render_target.blit(timer_text, ((w - tw)/2, 24, tw, th))
 
 def draw_game_over(game: gs.GameState, render_target: pygame.Surface):
     [w, h] = render_target.get_size()
 
-    pygame.draw.rect(render_target, 'black', (0.08 * w, 0.08 * h, 0.84 * w, 0.84 * h))
-    winner_color = game.teams[game.winner_team].color if game.winner_team != -1 else 'white'
+    pygame.draw.rect(render_target, "black", (0.08 * w, 0.08 * h, 0.84 * w, 0.84 * h))
+    winner_color = game.teams[game.winner_team].color if game.winner_team != -1 else "white"
     pygame.draw.rect(render_target, winner_color, (0.1 * w, 0.1 * h, 0.8 * w, 0.8 * h))
 
     text_font = game.assets[ast.Assets.MAIN_FONT]
     text = "Team "+ game.winner_team.__str__() + " won!" if game.winner_team != -1 else "Draw!"
-    win_text = text_font.render(text, True, 'black')
+    win_text = text_font.render(text, True, "black")
     [tw, th] = win_text.get_size()
     render_target.blit(win_text, ((w - tw)/2, (h - th)/2, tw, th))

@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from scripts.entity import Entity
+    from scripts.entity_upgrade import Upgrade
     from scripts.team import Team
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -14,8 +15,11 @@ class GameState:
 
     mouse_pos: tuple[int, int]|None = None
     mouse_left: bool = False
+    mouse_right: bool = False
     key_1: bool = False
     key_tab: bool = False
+
+    player_team: int = -1
 
     game_t: int = 0 #ms
     delta_t: int = 0 #ms
@@ -42,7 +46,9 @@ class GameState:
     show_boxes: bool = False
     assets: dict[str, pygame.Surface|pygame.font.Font] = {}
     boat_base_size: int = 48
+    upgrades: list['Upgrade'] = []
 
     # Players and team
     teams: list['Team'] = []
+
 

@@ -6,6 +6,12 @@ class Resources:
     RHUM = 1
     WOOD = 2
 
+RESOURCE_COLORS = {
+    Resources.GOLD: "#E3B637",
+    Resources.RHUM: "#B21E11",
+    Resources.WOOD: "#2F6F40",
+}
+
 def spread_resource_yield(game_state: gs.GameState):
     resource_slot_count = 0
     for entity in game_state.entities:
@@ -53,10 +59,7 @@ def tick_yield(game_state: gs.GameState):
             entity.resource_yield_timer = 0
             team = game_state.teams[entity.team]
             for resource in [entity.resource_a, entity.resource_b]:
-                match resource:
-                    case Resources.GOLD:
-                        team.gold += 1
-                    case Resources.RHUM:
-                        team.rhum += 1
-                    case Resources.WOOD:
-                        team.wood += 1
+                if resource == -1:
+                    continue
+
+                team.resources[resource] += 1

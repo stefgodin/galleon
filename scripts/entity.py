@@ -58,6 +58,8 @@ class Entity:
     wood_yield: int = 0
     resource_yield_timer: int = 0
     max_resource_yield_timer: int = 0
+    upgrades: list[int] = []
+    show_upgrades: bool = False
 
 def add_boat(game: gs.GameState) -> int:
     idx = game.entities.__len__()
@@ -119,7 +121,7 @@ def add_city(game: gs.GameState) -> int:
 
     city.can_yield_resources = True
     city.resource_yield_timer = 0
-    city.max_resource_yield_timer = 400
+    city.max_resource_yield_timer = 800
 
     game.entities.append(city)
     return idx
