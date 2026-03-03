@@ -68,6 +68,10 @@ def tick_capture(game_state: gs.GameState):
         
         if entity.capture_timer == entity.max_capture_timer:
             entity.capture_timer = 0
+            if entity.team != entity.capture_team and entity.capture_reset_stats:
+                entity.max_hp = entity.max_hp if entity.initial_max_hp == -1 else entity.initial_max_hp
+                entity.attack_speed = entity.attack_speed if entity.initial_attack_speed == -1 else entity.initial_attack_speed
+
             entity.team = entity.capture_team
             entity.hp = entity.max_hp
             entity.defeated = False

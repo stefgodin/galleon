@@ -149,7 +149,7 @@ def upgrade(game: gs.GameState, entity: en.Entity, upgrade: Upgrade):
         entity.attack_speed = upgrade.inc_attack
 
     if upgrade.inc_hp != -1:
-        ratio = entity.max_hp/upgrade.inc_hp
+        ratio = upgrade.inc_hp/entity.max_hp
         entity.max_hp = upgrade.inc_hp
         entity.hp = round(ratio * entity.hp)
     

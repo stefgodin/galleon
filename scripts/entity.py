@@ -38,6 +38,9 @@ class Entity:
     last_shot_t: int = 0
     can_capture: bool = False
     can_be_captured: bool = False
+    capture_reset_stats: bool = False
+    initial_max_hp: int = -1
+    initial_attack_speed: int = -1
     capture_timer: int = 0
     max_capture_timer: int = 0
     capture_team: int = -1
@@ -92,6 +95,8 @@ def add_boat(game: gs.GameState) -> int:
     boat.respawn_timer = 0
     boat.max_respawn_timer = 160
 
+    boat.upgrades = []
+
     game.entities.append(boat)
     return idx
 
@@ -107,10 +112,13 @@ def add_city(game: gs.GameState) -> int:
     city.defeated = False
     city.hp = 8
     city.max_hp = 8
+    city.initial_max_hp = city.max_hp
     city.team = 0
     city.attack_speed = 20
+    city.initial_attack_speed = city.attack_speed
     city.last_shot_t = 0
     city.can_be_captured = True
+    city.capture_reset_stats = True
     city.can_capture = False
     city.capture_timer = 0
     city.max_capture_timer = 160
@@ -122,6 +130,7 @@ def add_city(game: gs.GameState) -> int:
     city.can_yield_resources = True
     city.resource_yield_timer = 0
     city.max_resource_yield_timer = 800
+    city.upgrades = []
 
     game.entities.append(city)
     return idx

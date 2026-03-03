@@ -68,6 +68,8 @@ class WinTest(GameRunner):
                 game_state.tick_rate = game_state.tick_rate + 1
             elif keys[pygame.K_KP_ENTER]:
                 game_state.tick_rate = 25
+            
+            game_state.key_u = keys[pygame.K_u]
 
 
     # Called every fixed tick based on tick_rate (simulation speed), is not tied to framerate
@@ -110,9 +112,18 @@ class WinTest(GameRunner):
             
             if game_state.mouse_right:
                 for entity in game_state.entities:
-                    entity.show_upgrades = entity.current_tile == mouse_tile
+                    entity.show_upgrades = entity.current_tile == mouse_tile and not entity.defeated
 
             game_state.fake_grid_hovered_tile = mouse_tile
+        
+        if game_state.key_u:
+            for entity in game_state.entities:
+                if not entity.show_upgrades:
+                    continue
+                
+                for upgrade in game_state.upgrades:
+                    if en_upg.can_upgrade(game_state, entity, upgrade):
+                        en_upg.upgrade(game_state, entity, upgrade)
         
         en_move.update_movement_view(game_state)
     

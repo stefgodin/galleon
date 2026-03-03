@@ -1,5 +1,11 @@
 import pygame
 
+class UIElement:
+    pass
+
+class UIState:
+    ui_elements: list[UIElement]
+
 def align_in_grid(render_elements: list[list[pygame.Surface|None]], row_padding = 0, col_padding = 0, margin = 0):
     col_count = render_elements[0].__len__() if render_elements.__len__() else 0
     row_count = render_elements.__len__()

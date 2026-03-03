@@ -18,6 +18,7 @@ class GameState:
     mouse_right: bool = False
     key_1: bool = False
     key_tab: bool = False
+    key_u: bool = False
 
     player_team: int = -1
 
