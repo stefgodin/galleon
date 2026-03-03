@@ -36,7 +36,7 @@ def hex_corners(tile_center_coords):
 
     return corners
 
-def draw_tile(screen, tile_coords, boundary_color):
+def draw_tile(screen: pygame.Surface, tile_coords: pygame.Vector3, boundary_color: pygame.Color):
     tile_corners = hex_corners(tile_coords)
 
     pygame.draw.polygon(screen, colors[int(tile_coords.z)],tile_corners)
@@ -48,7 +48,7 @@ def draw_tile(screen, tile_coords, boundary_color):
             
         pygame.draw.line(screen, boundary_color, tile_corners[i], tile_corners[next_corner_index], 3)
 
-def position_to_coords(grid_postion: pygame.Vector3):
+def position_to_coords(grid_postion: pygame.Vector3) -> pygame.Vector3: 
     return pygame.Vector3(grid_postion.x * tile_horizontal_spacing, grid_postion.y * tile_vertical_spacing / 2, grid_postion.z)
 
 def draw_grid(screen):
@@ -94,3 +94,13 @@ def generate_grid(game_state: gs.GameState):
                 tile_info = pygame.Vector3()
                 tile_info.xyz = c, r, color 
                 grid.append(tile_info)
+
+def generate_grid_tile_image():
+    surface = pygame.Surface(((2*SIZE),(2*SIZE)))
+    for tile_type in Tile:
+        tile = pygame.Vector3(SIZE, SIZE, tile_type.value)
+        draw_tile(surface, tile, line_color)
+        file_name = tile_type.name + "_template.png"
+        pygame.image.save(surface, file_name)
+
+
