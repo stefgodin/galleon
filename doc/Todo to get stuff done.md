@@ -17,12 +17,12 @@
 	- [x] Boat destruction and respawn ✅ 2026-02-26
 - [x] Win conditions ✅ 2026-02-27
 	- [x] Have the most cities captured after time ✅ 2026-02-27
-- [ ] Resource system (counter + stealing + city resource + island resource)
+- [x] Resource system (counter + stealing + city resource + island resource) ✅ 2026-03-02
 	- [x] Resource timer ✅ 2026-03-01
 	- [x] Team info board ✅ 2026-03-01
 	- [x] Spread resource evenly between cities ✅ 2026-03-01
-	- [ ] Upgrades for boats
-	- [ ] Upgrades for cities
+	- [x] Upgrades for boats ✅ 2026-03-02
+	- [x] Upgrades for cities ✅ 2026-03-02
 - [ ] Camera panning
 - [ ] AI enemies
 - [ ] UI
