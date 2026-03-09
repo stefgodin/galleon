@@ -1,7 +1,10 @@
 import pygame
 from pathlib import Path
 from typing import TYPE_CHECKING
+
+
 if TYPE_CHECKING:
+    from scripts.tile import Tile
     from scripts.entity import Entity
     from scripts.entity_upgrade import Upgrade
     from scripts.team import Team
@@ -34,6 +37,8 @@ class GameState:
     fake_grid_tile_size: int = 64 # Todo move to grid
     fake_grid_tiles: list[int] = []
     fake_grid_hovered_tile: int = -1
+
+    hex_grid_tiles: list['Tile'] = []
 
     # Win condition
     max_game_timer: int = 0

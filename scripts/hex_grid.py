@@ -3,23 +3,15 @@ import pygame
 import random
 from enum import Enum
 import scripts.game_state as gs
+from scripts.tile import TileType,Tile
 
 SIZE = 20
 line_color = pygame.Color(0,0,0)
 highlight_line_color = pygame.Color(240,240,240)
-grid = []
 tile_horizontal_spacing = 3/2 * SIZE
 tile_vertical_spacing = math.sqrt(3) * SIZE
-colors = [(0, 0, 0), (0, 255, 255), (243, 206, 57), (131, 131, 131), (76, 0, 153), (0, 152, 0), (150, 152, 150)]
 
-class Tile(Enum):
-    VOID = 0
-    SEA = 1
-    ISLAND = 2
-    CITY = 3
-    COVE = 4
-    LAND = 5
-    CHOSEN = 6
+
 
 def flat_hex_corner(center, i):
     angle_deg = 60 * i
@@ -48,12 +40,12 @@ def draw_tile(screen: pygame.Surface, tile_coords: pygame.Vector3, boundary_colo
             
         pygame.draw.line(screen, boundary_color, tile_corners[i], tile_corners[next_corner_index], 3)
 
-def position_to_coords(grid_postion: pygame.Vector3) -> pygame.Vector3: 
+def hex_coords_to_screen_coords(grid_postion: pygame.Vector3) -> pygame.Vector3: 
     return pygame.Vector3(grid_postion.x * tile_horizontal_spacing, grid_postion.y * tile_vertical_spacing / 2, grid_postion.z)
 
-def draw_grid(screen):
-    for tile in grid:
-        tile_coords = position_to_coords(tile)
+def draw_grid(game_state: gs.GameState ,screen: pygame.Surface):
+    for tile in game_state.hex_grid_tiles:
+        tile_coords = hex_coords_to_screen_coords(tile.hex_coords)
         draw_tile(screen, tile_coords, line_color)
 
 def highlight_current_tile(screen):
@@ -90,14 +82,12 @@ def generate_grid(game_state: gs.GameState):
     for c in range(int(map_colums+1)):
         for r in range(int(map_rows+1)):
             if (c + r) % 2 == 0:
-                color = random.randint(1, 5)
-                tile_info = pygame.Vector3()
-                tile_info.xyz = c, r, color 
-                grid.append(tile_info)
+                tile_type = random.choice(list(TileType))
+                Tile.add_tile(game_state, (c, r), tile_type)
 
 def generate_grid_tile_image():
     surface = pygame.Surface(((2*SIZE),(2*SIZE)))
-    for tile_type in Tile:
+    for tile_type in TileType:
         tile = pygame.Vector3(SIZE, SIZE, tile_type.value)
         draw_tile(surface, tile, line_color)
         file_name = tile_type.name + "_template.png"

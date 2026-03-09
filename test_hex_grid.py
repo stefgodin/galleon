@@ -28,7 +28,7 @@ class HexGridTest(GameRunner):
     # Called once per frame to redraw
     @staticmethod
     def render(game_state: gs.GameState, render_target: pygame.Surface):
-        grid.draw_grid(render_target)
+        grid.draw_grid(game_state,render_target)
         grid.highlight_current_tile(render_target)
 
 HexGridTest().run()
