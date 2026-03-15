@@ -1,8 +1,9 @@
 from enum import Enum
 import scripts.game_state as gs
+import scripts.assets as asts
 import pygame
 
-colors = [(0, 0, 0), (0, 255, 255), (243, 206, 57), (131, 131, 131), (76, 0, 153), (0, 152, 0), (150, 152, 150)]
+TILE_COLORS = [(0, 0, 0), (0, 255, 255), (243, 206, 57), (131, 131, 131), (76, 0, 153), (0, 152, 0), (150, 152, 150)]
 
 class TileType(Enum):
     VOID = 0
@@ -17,12 +18,15 @@ class Tile:
     type: TileType = TileType.VOID
     hex_coords: tuple[int, int] = (0, 0)
     sprite : pygame.Surface|None = None
+    sprite_id: str|None = None
+    
 
     def add_tile(game : gs.GameState, hex_coords: tuple[int, int], tile_type: TileType) -> int:
         idx = len(game.hex_grid_tiles)
         tile = Tile()
         tile.hex_coords = hex_coords
         tile.type = tile_type
+        tile.sprite_id = getattr(asts.Assets, "TILE_" + tile_type.name)
         game.hex_grid_tiles.append(tile)
         return idx
     

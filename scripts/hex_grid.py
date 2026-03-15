@@ -3,7 +3,7 @@ import pygame
 import random
 from enum import Enum
 import scripts.game_state as gs
-from scripts.tile import TileType,Tile
+from scripts.tile import TILE_COLORS, TileType,Tile
 
 SIZE = 20
 line_color = pygame.Color(0,0,0)
@@ -28,25 +28,20 @@ def hex_corners(tile_center_coords):
 
     return corners
 
-def draw_tile(screen: pygame.Surface, tile_coords: pygame.Vector3, boundary_color: pygame.Color):
-    tile_corners = hex_corners(tile_coords)
+def draw_tile_for_asset_generation(screen: pygame.Surface, tile_coords: tuple[int, int], tile_type: TileType):
+    corners = hex_corners(pygame.Vector2(tile_coords[0], tile_coords[1]))
+    print(tile_type.value)
+    pygame.draw.polygon(screen, pygame.Color(TILE_COLORS[tile_type.value]), corners, 0)
+    pygame.draw.polygon(screen, pygame.Color(0, 0, 0), corners, 1)
 
-    pygame.draw.polygon(screen, colors[int(tile_coords.z)],tile_corners)
-    for i in range(len(tile_corners)):   
-        if i != (len(tile_corners) - 1):
-            next_corner_index = i + 1
-        else:
-            next_corner_index = 0
-            
-        pygame.draw.line(screen, boundary_color, tile_corners[i], tile_corners[next_corner_index], 3)
 
-def hex_coords_to_screen_coords(grid_postion: pygame.Vector3) -> pygame.Vector3: 
-    return pygame.Vector3(grid_postion.x * tile_horizontal_spacing, grid_postion.y * tile_vertical_spacing / 2, grid_postion.z)
+def hex_coords_to_screen_coords(grid_postion: tuple[int, int]) -> tuple[int, int]: 
+    return (grid_postion[0] * tile_horizontal_spacing, grid_postion[1] * tile_vertical_spacing / 2)
 
 def draw_grid(game_state: gs.GameState ,screen: pygame.Surface):
     for tile in game_state.hex_grid_tiles:
         tile_coords = hex_coords_to_screen_coords(tile.hex_coords)
-        draw_tile(screen, tile_coords, line_color)
+        draw_tile(game_state, screen, tile)
 
 def highlight_current_tile(screen):
     mouse_pos = pygame.mouse.get_pos()
@@ -59,8 +54,8 @@ def highlight_current_tile(screen):
             y += 1
         else:
             y -= 1
-    hex_coords = position_to_coords(pygame.Vector3(x,y,z))
-    draw_tile(screen, hex_coords, highlight_line_color)
+    hex_coords = hex_coords_to_screen_coords(pygame.Vector3(x,y,z))
+    draw_tile_for_asset_generation(screen, hex_coords, highlight_line_color)
 
 def give_me_tile():
     mouse_pos = pygame.mouse.get_pos()
@@ -75,6 +70,11 @@ def give_me_tile():
     z = 6
     print(x, y)
 
+def draw_tile(game: gs.GameState, render_target: pygame.Surface, tile: Tile):
+    tile_coords = hex_coords_to_screen_coords(tile.hex_coords)
+    tile_img = game.assets[tile.sprite_id]
+    render_target.blit(tile_img, tile_coords)
+
 def generate_grid(game_state: gs.GameState):
     map_colums = game_state.screen_width / SIZE
     map_rows = game_state.screen_height / (math.sqrt(3) * SIZE /2)
@@ -86,10 +86,11 @@ def generate_grid(game_state: gs.GameState):
                 Tile.add_tile(game_state, (c, r), tile_type)
 
 def generate_grid_tile_image():
-    surface = pygame.Surface(((2*SIZE),(2*SIZE)))
+    surface = pygame.Surface(((2*SIZE+2),(2*SIZE+2)))
+    surface.fill((255, 255, 255))
     for tile_type in TileType:
-        tile = pygame.Vector3(SIZE, SIZE, tile_type.value)
-        draw_tile(surface, tile, line_color)
+        tile = pygame.Vector2(SIZE, SIZE)
+        draw_tile_for_asset_generation(surface, tile, tile_type)
         file_name = tile_type.name + "_template.png"
         pygame.image.save(surface, file_name)
 
