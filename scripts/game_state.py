@@ -8,13 +8,15 @@ if TYPE_CHECKING:
     from scripts.entity import Entity
     from scripts.entity_upgrade import Upgrade
     from scripts.team import Team
+    from scripts.ui import UIState
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
 class GameState:
-    should_close = False
+    should_close: bool = False
     screen_width: int = 1280
     screen_height: int = 720
+    ui: 'UIState' = None
 
     mouse_pos: tuple[int, int]|None = None
     mouse_left: bool = False

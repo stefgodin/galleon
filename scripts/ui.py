@@ -1,10 +1,40 @@
 import pygame
+import scripts.game_state as gs
 
 class UIElement:
-    pass
+    id: int = -1
+    parent_id: int = -1
+    xy: tuple[int, int] = (0, 0) # relative to parent (render_target)
+    wh: tuple[int, int] = (0, 0)
 
 class UIState:
-    ui_elements: list[UIElement]
+    elements: list[UIElement] = []
+    viewport_id: int = -1
+
+def init_ui(game: gs.GameState):
+    game.ui = UIState()
+    viewport_id = add_ui_element(game.ui)
+    viewport = game.ui.elements[viewport_id]
+    viewport.xy = (0, 0)
+    viewport.wh = (game.screen_width, game.screen_height)
+    game.ui.viewport_id = viewport_id
+
+def add_ui_element(ui: UIState) -> int:
+    id = ui.elements.__len__()
+    el = UIElement()
+    el.id = id
+
+def update_ui(game: gs.GameState):
+    viewport = game.ui.elements[game.ui.viewport_id]
+    if game.screen_width != viewport.wh[0] or game.screen_height != viewport.wh[1]:
+        viewport.wh = (game.screen_width, game.screen_height)
+    
+
+def render_ui(game: gs.GameState, render_target: pygame.Surface):
+    pass
+
+def render_ui_el(game: gs.GameState, render_target: pygame.Surface, el: UIElement):
+    pass
 
 def align_in_grid(render_elements: list[list[pygame.Surface|None]], row_padding = 0, col_padding = 0, margin = 0):
     col_count = render_elements[0].__len__() if render_elements.__len__() else 0
