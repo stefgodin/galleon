@@ -13,7 +13,7 @@ import scripts.entity as en
 import scripts.win_condition as wc
 import scripts.team as t
 
-class WinTest(GameRunner):
+class UpgradeTest(GameRunner):
     # Called once at the start of the game
     @staticmethod
     def init(game_state: gs.GameState):
@@ -138,4 +138,4 @@ class WinTest(GameRunner):
         elif game_state.key_tab:
             t.draw_team_info(game_state, render_target)
 
-WinTest().run()
+UpgradeTest().run()
